@@ -1,0 +1,101 @@
+<section class="history-page">
+  <!-- En-tête -->
+  <header class="history-header">
+    <div class="history-header__inner">
+      <div>
+        <h1 class="history-header__title">Historique des trajets</h1>
+        <p class="history-header__subtitle">
+          Retrouve tes recherches récentes et relance-les en un clic.
+        </p>
+      </div>
+      @if (hasEntries()) {
+        <button type="button" class="btn btn-outline-secondary" (click)="clearAll()">
+          <i class="bi bi-trash3" aria-hidden="true"></i>
+          Tout effacer
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Contenu -->
+  <div class="history-content">
+    @if (!hasEntries()) {
+      <div class="state state--empty">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        <h2 class="state__title">Aucun historique pour l'instant</h2>
+        <p class="state__text">
+          Dès que tu lances une recherche, elle apparaîtra ici pour que tu puisses la retrouver
+          facilement.
+        </p>
+        <a class="btn btn-primary" routerLink="/">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          Lancer une recherche
+        </a>
+      </div>
+    } @else {
+      <ul class="history-list">
+        @for (entry of entries(); track entry.id) {
+          <li class="history-card" (click)="relaunch(entry)">
+            <!-- Icône du meilleur mode -->
+            <div
+              class="history-card__icon"
+              [style.background]="
+                'color-mix(in srgb, ' + modeColor(entry.best.mode) + ' 12%, transparent)'
+              "
+              [style.color]="modeColor(entry.best.mode)"
+            >
+              <i class="bi" [ngClass]="modeIcon(entry.best.mode)" aria-hidden="true"></i>
+            </div>
+
+            <!-- Détails -->
+            <div class="history-card__body">
+              <div class="history-card__route">
+                <strong>{{ entry.origin.label }}</strong>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                <strong>{{ entry.destination.label }}</strong>
+              </div>
+
+              <div class="history-card__meta">
+                <span class="history-card__date">
+                  <i class="bi bi-clock" aria-hidden="true"></i>
+                  {{ formatDate(entry.searchedAt) }}
+                </span>
+
+                <span class="history-card__badge">
+                  <i class="bi" [ngClass]="modeIcon(entry.best.mode)" aria-hidden="true"></i>
+                  {{ modeLabel(entry.best.mode) }}
+                </span>
+
+                <span class="history-card__detail">
+                  <i class="bi bi-cash-coin" aria-hidden="true"></i>
+                  {{ entry.best.costFcfa }} FCFA
+                </span>
+
+                <span class="history-card__detail">
+                  <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                  {{ entry.best.durationMin }} min
+                </span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="history-card__actions">
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                (click)="remove(entry, $event)"
+                title="Supprimer"
+              >
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" title="Relancer">
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                Relancer
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

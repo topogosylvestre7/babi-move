@@ -1,0 +1,123 @@
+<section class="community-page">
+  <!-- HERO -->
+  <header class="community-hero">
+    <div class="community-hero__inner">
+      <span class="community-hero__eyebrow">La force du collectif</span>
+      <h1 class="community-hero__title">Babi Move, c'est vous.</h1>
+      <p class="community-hero__subtitle">
+        Chaque jour, des Abidjanais partagent la réalité de leur trajet pour aider les autres à
+        mieux circuler.
+      </p>
+
+      <div class="community-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ totalContributions() }}</span>
+          <span class="stat-label">Signalements partagés</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ activeContributors }}</span>
+          <span class="stat-label">Contributeurs actifs</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ resolvedAlerts }}</span>
+          <span class="stat-label">Alertes confirmées</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENU -->
+  <div class="community-layout">
+    <!-- COLONNE GAUCHE : FLUX -->
+    <div class="community-feed">
+      <header class="feed-header">
+        <h2 class="feed-title">
+          <i class="bi bi-broadcast" aria-hidden="true"></i>
+          Flux communautaire
+        </h2>
+        <span class="live-badge"> <span class="live-dot"></span> En direct </span>
+      </header>
+
+      <ul class="feed-list">
+        @for (item of feed(); track item.id) {
+          <li class="feed-item" [class.feed-item--mine]="item.isCurrentUser">
+            <!-- Avatar -->
+            <div
+              class="feed-avatar"
+              [style.background]="
+                item.isCurrentUser ? 'var(--em-primary)' : 'var(--em-surface-dim)'
+              "
+            >
+              {{ item.initials }}
+            </div>
+
+            <!-- Contenu -->
+            <div class="feed-content">
+              <header class="feed-item-header">
+                <span class="feed-author">
+                  {{ item.userName }}
+                  @if (item.isCurrentUser) {
+                    <span class="badge-you">Vous</span>
+                  }
+                </span>
+                <span class="feed-time">{{ formatTime(item.createdAt) }}</span>
+              </header>
+
+              <div class="feed-body">
+                <span class="feed-type" [style.color]="typeColor(item.type)">
+                  <i class="bi" [ngClass]="typeIcon(item.type)" aria-hidden="true"></i>
+                  {{ typeLabel(item.type) }}
+                </span>
+                <span class="feed-sep">•</span>
+                <span class="feed-commune">{{ item.communeName }}</span>
+              </div>
+
+              <p class="feed-desc">{{ item.description }}</p>
+
+              @if (item.isCurrentUser) {
+                <div class="feed-status">
+                  Statut :
+                  <strong [class]="'status-' + item.status">{{ statusLabel(item.status) }}</strong>
+                </div>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- COLONNE DROITE : SIDEBAR -->
+    <aside class="community-sidebar">
+      <!-- Appel à l'action -->
+      <div class="cta-card">
+        <div class="cta-icon"><i class="bi bi-megaphone-fill"></i></div>
+        <h3>Partage ce que tu vois</h3>
+        <p>Un bouchon, un accident, un prix qui change ? Aide les autres Babi en 15 secondes.</p>
+        <a routerLink="/contribuer" class="btn btn-primary w-100"> Faire un signalement </a>
+      </div>
+
+      <!-- Classement -->
+      <div class="leaderboard-card">
+        <h3 class="sidebar-title">
+          <i class="bi bi-trophy-fill" aria-hidden="true"></i>
+          Top Contributeurs
+        </h3>
+        <ul class="leaderboard-list">
+          @for (user of MOCK_LEADERBOARD; track user.name; let i = $index) {
+            <li class="leaderboard-item">
+              <span class="leaderboard-rank">{{ user.badge }}</span>
+              <div
+                class="leaderboard-avatar"
+                [style.background]="i === 0 ? 'var(--em-primary)' : 'var(--em-surface-dim)'"
+              >
+                {{ user.initials }}
+              </div>
+              <span class="leaderboard-name">{{ user.name }}</span>
+              <span class="leaderboard-score">{{ user.score }} <small>pts</small></span>
+            </li>
+          }
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>

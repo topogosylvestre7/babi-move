@@ -1,0 +1,794 @@
+{
+  "meta": {
+    "simulated": true,
+    "description": "Tarifs et durées simulés, non officiels. Les durées sont données hors embouteillage ; les montants sont en FCFA.",
+    "durationFormula": "durée affichée = durationMin × (1 + (facteur de la période − 1) × trafficSensitivity du mode), puis × weekendFactor le samedi et le dimanche"
+  },
+  "trafficPeriods": [
+    {
+      "id": "night",
+      "label": "Nuit",
+      "from": "22:00",
+      "to": "05:30",
+      "factor": 0.85
+    },
+    {
+      "id": "early",
+      "label": "Début de matinée",
+      "from": "05:30",
+      "to": "06:30",
+      "factor": 1.0
+    },
+    {
+      "id": "morning-peak",
+      "label": "Heure de pointe du matin",
+      "from": "06:30",
+      "to": "09:30",
+      "factor": 1.6
+    },
+    {
+      "id": "midday",
+      "label": "Journée",
+      "from": "09:30",
+      "to": "16:00",
+      "factor": 1.15
+    },
+    {
+      "id": "evening-peak",
+      "label": "Heure de pointe du soir",
+      "from": "16:00",
+      "to": "20:00",
+      "factor": 1.8
+    },
+    {
+      "id": "evening",
+      "label": "Soirée",
+      "from": "20:00",
+      "to": "22:00",
+      "factor": 1.0
+    }
+  ],
+  "weekendFactor": 0.85,
+  "fallback": {
+    "description": "Pour un trajet sans axe défini : distance à vol d'oiseau × roadFactor, puis coût = (baseFareFcfa + farePerKmFcfa × distance) × fareSpread, durée = distance / avgSpeedKmh + waitMin.",
+    "roadFactor": 1.35,
+    "fareSpread": {
+      "min": 0.9,
+      "max": 1.2
+    }
+  },
+  "axes": [
+    {
+      "id": "yopougon-plateau",
+      "from": "yopougon",
+      "to": "plateau",
+      "via": ["attecoube"],
+      "distanceKm": 11.4,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 400,
+          "durationMin": 39,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 450,
+          "costMaxFcfa": 600,
+          "durationMin": 34,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 46,
+          "transfers": 0
+        },
+        {
+          "mode": "bateau-bus",
+          "costMinFcfa": 500,
+          "costMaxFcfa": 700,
+          "durationMin": 40,
+          "transfers": 1
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2500,
+          "costMaxFcfa": 3400,
+          "durationMin": 30,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "yopougon-adjame",
+      "from": "yopougon",
+      "to": "adjame",
+      "via": ["attecoube"],
+      "distanceKm": 10.5,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 350,
+          "durationMin": 37,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 400,
+          "costMaxFcfa": 550,
+          "durationMin": 31,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 44,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2400,
+          "costMaxFcfa": 3200,
+          "durationMin": 28,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "yopougon-cocody",
+      "from": "yopougon",
+      "to": "cocody",
+      "via": ["attecoube", "adjame"],
+      "distanceKm": 16.6,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 400,
+          "costMaxFcfa": 500,
+          "durationMin": 53,
+          "transfers": 1
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 300,
+          "durationMin": 62,
+          "transfers": 1
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 3300,
+          "costMaxFcfa": 4600,
+          "durationMin": 42,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "cocody-plateau",
+      "from": "cocody",
+      "to": "plateau",
+      "via": [],
+      "distanceKm": 7.6,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 250,
+          "costMaxFcfa": 300,
+          "durationMin": 29,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 350,
+          "costMaxFcfa": 450,
+          "durationMin": 24,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 35,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1900,
+          "costMaxFcfa": 2500,
+          "durationMin": 22,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "cocody-marcory",
+      "from": "cocody",
+      "to": "marcory",
+      "via": [],
+      "distanceKm": 8.4,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 250,
+          "costMaxFcfa": 300,
+          "durationMin": 31,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 350,
+          "costMaxFcfa": 500,
+          "durationMin": 26,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 37,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2100,
+          "costMaxFcfa": 2700,
+          "durationMin": 24,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "cocody-adjame",
+      "from": "cocody",
+      "to": "adjame",
+      "via": [],
+      "distanceKm": 6.5,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 26,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 400,
+          "durationMin": 21,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 32,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1800,
+          "costMaxFcfa": 2300,
+          "durationMin": 20,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "abobo-plateau",
+      "from": "abobo",
+      "to": "plateau",
+      "via": ["adjame"],
+      "distanceKm": 14.6,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 350,
+          "costMaxFcfa": 450,
+          "durationMin": 48,
+          "transfers": 1
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 300,
+          "durationMin": 56,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 3000,
+          "costMaxFcfa": 4200,
+          "durationMin": 37,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "abobo-adjame",
+      "from": "abobo",
+      "to": "adjame",
+      "via": [],
+      "distanceKm": 8.6,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 250,
+          "costMaxFcfa": 300,
+          "durationMin": 31,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 350,
+          "costMaxFcfa": 500,
+          "durationMin": 26,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 38,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2100,
+          "costMaxFcfa": 2800,
+          "durationMin": 24,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "abobo-cocody",
+      "from": "abobo",
+      "to": "cocody",
+      "via": ["adjame"],
+      "distanceKm": 11.1,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 400,
+          "durationMin": 38,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 450,
+          "costMaxFcfa": 600,
+          "durationMin": 33,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 45,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2500,
+          "costMaxFcfa": 3400,
+          "durationMin": 30,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "anyama-abobo",
+      "from": "anyama",
+      "to": "abobo",
+      "via": [],
+      "distanceKm": 12.6,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 350,
+          "costMaxFcfa": 400,
+          "durationMin": 42,
+          "transfers": 1
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 300,
+          "durationMin": 50,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2700,
+          "costMaxFcfa": 3700,
+          "durationMin": 33,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "marcory-plateau",
+      "from": "marcory",
+      "to": "plateau",
+      "via": ["treichville"],
+      "distanceKm": 5.0,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 22,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 250,
+          "costMaxFcfa": 350,
+          "durationMin": 18,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 27,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1600,
+          "costMaxFcfa": 2000,
+          "durationMin": 17,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "treichville-plateau",
+      "from": "treichville",
+      "to": "plateau",
+      "via": [],
+      "distanceKm": 3.8,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 18,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 250,
+          "costMaxFcfa": 300,
+          "durationMin": 14,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 23,
+          "transfers": 0
+        },
+        {
+          "mode": "bateau-bus",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 500,
+          "durationMin": 12,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1400,
+          "costMaxFcfa": 1700,
+          "durationMin": 14,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "treichville-marcory",
+      "from": "treichville",
+      "to": "marcory",
+      "via": [],
+      "distanceKm": 3.1,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 16,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 300,
+          "durationMin": 13,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 21,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1300,
+          "costMaxFcfa": 1500,
+          "durationMin": 13,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "koumassi-plateau",
+      "from": "koumassi",
+      "to": "plateau",
+      "via": ["marcory", "treichville"],
+      "distanceKm": 10.6,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 350,
+          "durationMin": 37,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 400,
+          "costMaxFcfa": 550,
+          "durationMin": 32,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 44,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2400,
+          "costMaxFcfa": 3200,
+          "durationMin": 29,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "koumassi-marcory",
+      "from": "koumassi",
+      "to": "marcory",
+      "via": [],
+      "distanceKm": 6.0,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 24,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 400,
+          "durationMin": 20,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 30,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1700,
+          "costMaxFcfa": 2200,
+          "durationMin": 19,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "port-bouet-plateau",
+      "from": "port-bouet",
+      "to": "plateau",
+      "via": ["koumassi", "marcory", "treichville"],
+      "distanceKm": 16.2,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 400,
+          "costMaxFcfa": 500,
+          "durationMin": 52,
+          "transfers": 1
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 300,
+          "durationMin": 61,
+          "transfers": 1
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 3200,
+          "costMaxFcfa": 4500,
+          "durationMin": 41,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "port-bouet-marcory",
+      "from": "port-bouet",
+      "to": "marcory",
+      "via": ["koumassi"],
+      "distanceKm": 11.2,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 400,
+          "durationMin": 39,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 450,
+          "costMaxFcfa": 600,
+          "durationMin": 33,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 46,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2500,
+          "costMaxFcfa": 3400,
+          "durationMin": 30,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "adjame-plateau",
+      "from": "adjame",
+      "to": "plateau",
+      "via": [],
+      "distanceKm": 6.1,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 25,
+          "transfers": 0
+        },
+        {
+          "mode": "woro-woro",
+          "costMinFcfa": 300,
+          "costMaxFcfa": 400,
+          "durationMin": 20,
+          "transfers": 0
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 250,
+          "durationMin": 30,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 1700,
+          "costMaxFcfa": 2200,
+          "durationMin": 19,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "bingerville-cocody",
+      "from": "bingerville",
+      "to": "cocody",
+      "via": [],
+      "distanceKm": 14.2,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 350,
+          "costMaxFcfa": 450,
+          "durationMin": 47,
+          "transfers": 1
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 300,
+          "durationMin": 55,
+          "transfers": 0
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 2900,
+          "costMaxFcfa": 4100,
+          "durationMin": 36,
+          "transfers": 0
+        }
+      ]
+    },
+    {
+      "id": "songon-yopougon",
+      "from": "songon",
+      "to": "yopougon",
+      "via": [],
+      "distanceKm": 24.1,
+      "bidirectional": true,
+      "modes": [
+        {
+          "mode": "gbaka",
+          "costMinFcfa": 550,
+          "costMaxFcfa": 700,
+          "durationMin": 74,
+          "transfers": 1
+        },
+        {
+          "mode": "sotra",
+          "costMinFcfa": 200,
+          "costMaxFcfa": 350,
+          "durationMin": 84,
+          "transfers": 1
+        },
+        {
+          "mode": "vtc",
+          "costMinFcfa": 4400,
+          "costMaxFcfa": 6300,
+          "durationMin": 58,
+          "transfers": 0
+        }
+      ]
+    }
+  ]
+}

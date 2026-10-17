@@ -1,0 +1,119 @@
+[
+  {
+    "id": "abobo",
+    "name": "Abobo",
+    "center": {
+      "lat": 5.417,
+      "lng": -4.02
+    },
+    "popular": true
+  },
+  {
+    "id": "adjame",
+    "name": "Adjamé",
+    "center": {
+      "lat": 5.36,
+      "lng": -4.023
+    },
+    "popular": true
+  },
+  {
+    "id": "attecoube",
+    "name": "Attécoubé",
+    "center": {
+      "lat": 5.34,
+      "lng": -4.04
+    },
+    "popular": false
+  },
+  {
+    "id": "cocody",
+    "name": "Cocody",
+    "center": {
+      "lat": 5.355,
+      "lng": -3.98
+    },
+    "popular": true
+  },
+  {
+    "id": "koumassi",
+    "name": "Koumassi",
+    "center": {
+      "lat": 5.295,
+      "lng": -3.95
+    },
+    "popular": true
+  },
+  {
+    "id": "marcory",
+    "name": "Marcory",
+    "center": {
+      "lat": 5.3,
+      "lng": -3.99
+    },
+    "popular": true
+  },
+  {
+    "id": "plateau",
+    "name": "Plateau",
+    "center": {
+      "lat": 5.3197,
+      "lng": -4.0167
+    },
+    "popular": true
+  },
+  {
+    "id": "port-bouet",
+    "name": "Port-Bouët",
+    "center": {
+      "lat": 5.255,
+      "lng": -3.93
+    },
+    "popular": false
+  },
+  {
+    "id": "treichville",
+    "name": "Treichville",
+    "center": {
+      "lat": 5.295,
+      "lng": -4.01
+    },
+    "popular": true
+  },
+  {
+    "id": "yopougon",
+    "name": "Yopougon",
+    "center": {
+      "lat": 5.34,
+      "lng": -4.09
+    },
+    "popular": true
+  },
+  {
+    "id": "bingerville",
+    "name": "Bingerville",
+    "center": {
+      "lat": 5.355,
+      "lng": -3.885
+    },
+    "popular": false
+  },
+  {
+    "id": "anyama",
+    "name": "Anyama",
+    "center": {
+      "lat": 5.495,
+      "lng": -4.052
+    },
+    "popular": false
+  },
+  {
+    "id": "songon",
+    "name": "Songon",
+    "center": {
+      "lat": 5.32,
+      "lng": -4.25
+    },
+    "popular": false
+  }
+]

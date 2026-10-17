@@ -1,0 +1,231 @@
+<header class="header">
+  <nav class="nbar" aria-label="Navigation principale">
+    <!-- Marque -->
+    <a class="nbar-brand" routerLink="/" (click)="closeMenu()">
+      <div class="nbar-logo" aria-hidden="true">
+        <i class="bi bi-signpost-split-fill"></i>
+      </div>
+      <div class="nbar-brand-text">
+        <span class="nbar-brand-name">Babi Move</span>
+        <span class="nbar-brand-tagline">En direct · Grand Abidjan</span>
+      </div>
+    </a>
+
+    <!-- Navigation (Desktop) -->
+    <div class="nbar-nav">
+      @for (link of navLinks; track link.routerLink) {
+        <a
+          class="nbar-link"
+          [routerLink]="link.routerLink"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: !!link.exact }"
+        >
+          {{ link.label }}
+          @if (link.badge) {
+            <span class="nbar-badge">{{ link.badge }}</span>
+          }
+        </a>
+      }
+    </div>
+
+    <!-- Actions (Desktop) -->
+    <div class="nbar-actions d-none d-lg-flex">
+      <a class="nbar-cta" routerLink="/resultats">
+        <i class="bi bi-signpost-2" aria-hidden="true"></i>
+        Calculer un trajet
+      </a>
+    </div>
+
+    <!-- Actions communes (Desktop + Mobile) -->
+    <div class="nbar-actions-common">
+      <!-- Notifications (si connecté) -->
+      @if (isLoggedIn()) {
+        <div class="nbar-notif-wrap">
+          <button
+            type="button"
+            class="nbar-icon-btn"
+            aria-label="Voir les notifications"
+            (click)="toggleNotifMenu()"
+            [attr.aria-expanded]="isNotifOpen()"
+          >
+            <i class="bi bi-bell"></i>
+            @if (unreadCount() > 0) {
+              <span class="nbar-notif-dot"></span>
+            }
+          </button>
+
+          <!-- Panneau Notifications -->
+          @if (isNotifOpen()) {
+            <div class="nbar-notif-dropdown">
+              <div class="notif-header">
+                <h3 class="notif-title">
+                  Notifications
+                  @if (unreadCount() > 0) {
+                    <span class="notif-badge">{{ unreadCount() }}</span>
+                  }
+                </h3>
+                @if (unreadCount() > 0) {
+                  <button type="button" class="notif-action" (click)="markAllAsRead()">
+                    <i class="bi bi-check-all"></i> Tout lire
+                  </button>
+                }
+              </div>
+
+              <div class="notif-list">
+                @for (n of notifications(); track n.id) {
+                  <div class="notif-item" [class.unread]="!n.read">
+                    <div class="notif-icon" [ngClass]="'notif-icon--' + n.type">
+                      <i
+                        class="bi"
+                        [ngClass]="{
+                          'bi-info-circle-fill': n.type === 'info',
+                          'bi-check-circle-fill': n.type === 'success',
+                          'bi-exclamation-triangle-fill': n.type === 'warning',
+                          'bi-x-circle-fill': n.type === 'error',
+                        }"
+                      ></i>
+                    </div>
+                    <div class="notif-content">
+                      <p class="notif-item-title">{{ n.title }}</p>
+                      <p class="notif-item-message">{{ n.message }}</p>
+                      <span class="notif-item-time">{{ n.time }}</span>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="notif-empty">
+                    <i class="bi bi-bell-slash"></i>
+                    <p>Aucune notification</p>
+                  </div>
+                }
+              </div>
+
+              <div class="notif-footer">
+                <a routerLink="/contribuer" (click)="closeNotifMenu()">Voir mes contributions</a>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Utilisateur connecté / Menu déroulant -->
+      @if (isLoggedIn()) {
+        <div class="nbar-user-wrap">
+          <button
+            type="button"
+            class="nbar-user-btn"
+            [class.is-open]="isUserMenuOpen()"
+            (click)="toggleUserMenu()"
+            [attr.aria-expanded]="isUserMenuOpen()"
+            aria-haspopup="true"
+          >
+            <div class="nbar-avatar">{{ userInitials() }}</div>
+            <i class="bi bi-chevron-down nbar-chevron d-none d-lg-inline" aria-hidden="true"></i>
+          </button>
+
+          @if (isUserMenuOpen()) {
+            <div class="nbar-dropdown" role="menu">
+              <div class="nbar-dropdown-header">
+                <span class="nbar-dropdown-name"
+                  >{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</span
+                >
+                <span class="nbar-dropdown-email">{{ currentUser()?.email }}</span>
+              </div>
+              <div class="nbar-dropdown-divider"></div>
+              <a
+                class="nbar-dropdown-item"
+                routerLink="/mon-espace"
+                role="menuitem"
+                (click)="closeUserMenu()"
+              >
+                <i class="bi bi-person" aria-hidden="true"></i> Mon compte
+              </a>
+              <a
+                class="nbar-dropdown-item"
+                routerLink="/historique"
+                role="menuitem"
+                (click)="closeUserMenu()"
+              >
+                <i class="bi bi-clock-history" aria-hidden="true"></i> Mon historique
+              </a>
+              <a
+                class="nbar-dropdown-item"
+                routerLink="/contribuer"
+                role="menuitem"
+                (click)="closeUserMenu()"
+              >
+                <i class="bi bi-megaphone" aria-hidden="true"></i> Mes contributions
+              </a>
+              <div class="nbar-dropdown-divider"></div>
+              <button
+                type="button"
+                class="nbar-dropdown-item nbar-dropdown-item--danger"
+                role="menuitem"
+                (click)="logout()"
+              >
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Déconnexion
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Boutons login/register visibles sur desktop -->
+        <div class="d-none d-lg-flex gap-2">
+          <a class="nbar-btn-login" routerLink="/connexion">Connexion</a>
+          <a class="nbar-btn-signup" routerLink="/inscription">S'inscrire</a>
+        </div>
+      }
+    </div>
+
+    <!-- Burger (Mobile) -->
+    <button
+      type="button"
+      class="nbar-burger"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="mobile-menu"
+      aria-label="Ouvrir le menu"
+      (click)="toggleMenu()"
+    >
+      <i class="bi" [ngClass]="menuOpen() ? 'bi-x-lg' : 'bi-list'" aria-hidden="true"></i>
+    </button>
+  </nav>
+
+  <!-- Menu Mobile -->
+  @if (menuOpen()) {
+    <nav id="mobile-menu" class="nbar-mobile">
+      <a class="nbar-cta w-100" routerLink="/resultats" (click)="closeMenu()">
+        <i class="bi bi-signpost-2" aria-hidden="true"></i>
+        Calculer un trajet
+      </a>
+
+      @for (link of navLinks; track link.routerLink) {
+        <a
+          class="nbar-mobile-link"
+          [routerLink]="link.routerLink"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: !!link.exact }"
+          (click)="closeMenu()"
+        >
+          {{ link.label }}
+          @if (link.badge) {
+            <span class="nbar-badge">{{ link.badge }}</span>
+          }
+        </a>
+      }
+
+      <div class="nbar-mobile-actions">
+        @if (isLoggedIn()) {
+          <button type="button" class="nbar-btn-signup w-100" (click)="logout()">
+            Déconnexion
+          </button>
+        } @else {
+          <a class="nbar-btn-login w-100" routerLink="/connexion" (click)="closeMenu()"
+            >Connexion</a
+          >
+          <a class="nbar-btn-signup w-100" routerLink="/inscription" (click)="closeMenu()"
+            >S'inscrire</a
+          >
+        }
+      </div>
+    </nav>
+  }
+</header>

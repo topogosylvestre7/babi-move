@@ -1,0 +1,83 @@
+[
+  {
+    "id": "gbaka",
+    "label": "Gbaka",
+    "icon": "bus",
+    "color": "#F59E0B",
+    "baseFareFcfa": 100,
+    "farePerKmFcfa": 21,
+    "avgSpeedKmh": 22,
+    "waitMin": 8,
+    "comfort": 2,
+    "trafficSensitivity": 0.9,
+    "fallbackEligible": true
+  },
+  {
+    "id": "woro-woro",
+    "label": "Woro-woro",
+    "icon": "car-taxi-front",
+    "color": "#E11D48",
+    "baseFareFcfa": 150,
+    "farePerKmFcfa": 30,
+    "avgSpeedKmh": 24,
+    "waitMin": 5,
+    "comfort": 3,
+    "trafficSensitivity": 0.9,
+    "maxDistanceKm": 12,
+    "fallbackEligible": true
+  },
+  {
+    "id": "sotra",
+    "label": "Bus SOTRA",
+    "icon": "bus-front",
+    "color": "#16A34A",
+    "baseFareFcfa": 200,
+    "farePerKmFcfa": 6,
+    "avgSpeedKmh": 20,
+    "waitMin": 12,
+    "comfort": 3,
+    "trafficSensitivity": 0.85,
+    "maxDistanceKm": 30,
+    "fallbackEligible": true
+  },
+  {
+    "id": "bateau-bus",
+    "label": "Bateau-bus",
+    "icon": "ship",
+    "color": "#0284C7",
+    "baseFareFcfa": 400,
+    "farePerKmFcfa": 0,
+    "avgSpeedKmh": 20,
+    "waitMin": 10,
+    "comfort": 4,
+    "trafficSensitivity": 0,
+    "fallbackEligible": false
+  },
+  {
+    "id": "vtc",
+    "label": "VTC (Yango, Heetch…)",
+    "icon": "car",
+    "color": "#111827",
+    "baseFareFcfa": 800,
+    "farePerKmFcfa": 190,
+    "avgSpeedKmh": 28,
+    "waitMin": 6,
+    "comfort": 5,
+    "trafficSensitivity": 1,
+    "fallbackEligible": true
+  },
+  {
+    "id": "marche",
+    "label": "Marche",
+    "icon": "footprints",
+    "color": "#6B7280",
+    "baseFareFcfa": 0,
+    "farePerKmFcfa": 0,
+    "avgSpeedKmh": 5,
+    "waitMin": 0,
+    "comfort": 2,
+    "trafficSensitivity": 0,
+    "maxDistanceKm": 3,
+    "fallbackEligible": true
+  }
+]

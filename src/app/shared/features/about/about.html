@@ -1,0 +1,153 @@
+<!-- HERO -->
+<section class="ac__hero">
+  <div class="ac__hero-content">
+    <nav class="ac__breadcrumb">
+      <a routerLink="/">Accueil</a>
+      <span>›</span>
+      <span>À propos</span>
+    </nav>
+    <h1 class="ac__hero-title">Notre histoire</h1>
+  </div>
+</section>
+
+<!-- INTRO SECTION (Problématique) -->
+<section class="ac__intro">
+  <div class="ac__container ac__intro-grid">
+    <!-- Left -->
+    <div class="ac__intro-text">
+      <span class="ac__badge">La problématique</span>
+      <h2 class="ac__section-title">
+        Le trafic à Abidjan ne devrait pas<br />
+        être un parcours du combattant.
+      </h2>
+      <p class="ac__desc">
+        Chaque jour, des millions d'Abidjanais font face à des embouteillages monstres sur les
+        ponts, à l'incertitude des tarifs des transports informels et à un manque criant
+        d'informations en temps réel.
+        <br /><br />
+        Nous avons créé <strong>Babi Move</strong> pour répondre à un besoin simple : comment se
+        déplacer d'un point A à un point B, de la manière la plus rapide et la moins chère possible,
+        sans stress inutile.
+      </p>
+      <a routerLink="/resultats" class="ac__btn"
+        >Tester l'application <span class="ac__btn-arrow">→</span></a
+      >
+    </div>
+    <!-- Right: image -->
+    <div class="ac__intro-media">
+      <img
+        src="https://images.pexels.com/photos/1068619/pexels-photo-1068619.jpeg?auto=compress&cs=tinysrgb&w=700&h=500&fit=crop"
+        alt="Circulation à Abidjan"
+        class="ac__media-img"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- VALUES SECTION (Les piliers) -->
+<section class="ac__values">
+  <div class="ac__container">
+    <div class="ac__values-header">
+      <span class="ac__badge ac__badge--center">Nos piliers</span>
+      <h2 class="ac__section-title ac__section-title--center">
+        Une application pensée par et<br />
+        pour les Babis.
+      </h2>
+    </div>
+    <div class="ac__values-grid">
+      <div
+        *ngFor="let v of values"
+        class="ac__value-card"
+        [class.ac__value-card--active]="v.active"
+      >
+        <div class="ac__value-icon">
+          <!-- Transparency icon -->
+          <i *ngIf="v.icon === 'transparency'" class="bi bi-tags-fill"></i>
+          <!-- Community icon -->
+          <i *ngIf="v.icon === 'community'" class="bi bi-people-fill"></i>
+          <!-- Multimodal icon -->
+          <i *ngIf="v.icon === 'multimodal'" class="bi bi-signpost-split-fill"></i>
+        </div>
+        <h3 class="ac__value-title">{{ v.title }}</h3>
+        <p class="ac__value-desc">{{ v.desc }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION SECTION -->
+<section class="ac__mission">
+  <div class="ac__container ac__mission-grid">
+    <!-- Left -->
+    <div class="ac__mission-left">
+      <span class="ac__badge">Pourquoi "Babi Move" ?</span>
+      <h2 class="ac__section-title">
+        "Babi" pour le jargon,<br />
+        "Move" pour l'action.
+      </h2>
+      <p class="ac__desc">
+        Nous avons choisi le nom <strong>Babi Move</strong> pour ancrer notre solution dans la
+        réalité ivoirienne. "Babi" est le surnom affectueux que les habitants donnent à Abidjan.
+        <br /><br />
+        Notre mission est de rendre le mouvement (Move) dans cette métropole plus fluide, plus
+        prévisible et accessible à tous, du citadin pressé à l'étudiant.
+      </p>
+      <a routerLink="/contribuer" class="ac__btn"
+        >Rejoindre la communauté <span class="ac__btn-arrow">→</span></a
+      >
+    </div>
+    <!-- Right -->
+    <div class="ac__mission-right">
+      <blockquote class="ac__quote">
+        "La mobilité urbaine ne doit pas être un privilège, mais une expérience sereine."
+      </blockquote>
+      <p class="ac__desc">Notre engagement se traduit par des actions concrètes au quotidien :</p>
+      <ul class="ac__checklist">
+        <li *ngFor="let item of checklistMission" class="ac__checklist-item">
+          <span class="ac__check-icon">
+            <i class="bi bi-check-lg"></i>
+          </span>
+          {{ item }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- VISION SECTION -->
+<section class="ac__vision">
+  <div class="ac__container ac__vision-grid">
+    <!-- Left: image -->
+    <div class="ac__vision-img-wrap">
+      <img
+        src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600&h=700&fit=crop"
+        alt="Communauté Babi Move"
+        class="ac__vision-img"
+      />
+    </div>
+    <!-- Right -->
+    <div class="ac__vision-text">
+      <span class="ac__badge">Notre vision</span>
+      <h2 class="ac__section-title">
+        Un réseau de mobilité<br />
+        intelligent et connecté.
+      </h2>
+      <p class="ac__desc">
+        Babi Move n'est que le début. Nous croyons en un avenir où la data citoyenne permet
+        d'optimiser les flux, de réduire l'empreinte carbone et de connecter tous les modes de
+        transport (formels et informels).
+      </p>
+      <ul class="ac__checklist">
+        <li *ngFor="let item of checklistVision" class="ac__checklist-item">
+          <span class="ac__check-icon">
+            <i class="bi bi-check-lg"></i>
+          </span>
+          {{ item }}
+        </li>
+      </ul>
+      <a routerLink="/" class="ac__btn" style="margin-top: 1.5rem"
+        >Retour à l'accueil <span class="ac__btn-arrow">→</span></a
+      >
+    </div>
+  </div>
+</section>

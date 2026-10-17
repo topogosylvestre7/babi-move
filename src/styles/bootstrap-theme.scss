@@ -1,0 +1,283 @@
+// Variantes
+@mixin btn-solid(
+  $bg,
+  $color,
+  $hover-bg,
+  $active-bg,
+  $focus-rgb,
+  $border: $bg,
+  $hover-border: $hover-bg,
+  $active-border: $active-bg
+) {
+  --bs-btn-color: #{$color};
+  --bs-btn-bg: #{$bg};
+  --bs-btn-border-color: #{$border};
+  --bs-btn-hover-color: #{$color};
+  --bs-btn-hover-bg: #{$hover-bg};
+  --bs-btn-hover-border-color: #{$hover-border};
+  --bs-btn-focus-shadow-rgb: #{$focus-rgb};
+  --bs-btn-active-color: #{$color};
+  --bs-btn-active-bg: #{$active-bg};
+  --bs-btn-active-border-color: #{$active-border};
+  --bs-btn-disabled-color: #{$color};
+  --bs-btn-disabled-bg: #{$bg};
+  --bs-btn-disabled-border-color: #{$border};
+}
+
+@mixin btn-outline($color, $border, $hover-bg, $hover-color, $focus-rgb) {
+  --bs-btn-color: #{$color};
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #{$border};
+  --bs-btn-hover-color: #{$hover-color};
+  --bs-btn-hover-bg: #{$hover-bg};
+  --bs-btn-hover-border-color: #{$hover-bg};
+  --bs-btn-focus-shadow-rgb: #{$focus-rgb};
+  --bs-btn-active-color: #{$hover-color};
+  --bs-btn-active-bg: #{$hover-bg};
+  --bs-btn-active-border-color: #{$hover-bg};
+  --bs-btn-disabled-color: #{$color};
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #{$border};
+}
+
+// Couleurs sémantiques de Bootstrap (utilitaires text-*, bg-*, alertes, badges).
+@mixin bs-color($name, $main, $rgb, $emphasis) {
+  --bs-#{$name}: #{$main};
+  --bs-#{$name}-rgb: #{$rgb};
+  --bs-#{$name}-text-emphasis: #{$emphasis};
+  --bs-#{$name}-bg-subtle: rgba(#{$rgb}, 0.12);
+  --bs-#{$name}-border-subtle: rgba(#{$rgb}, 0.3);
+}
+
+// Variables
+:root,
+[data-bs-theme='light'] {
+  // Texte et fond
+  --bs-body-font-family: var(--em-font-body);
+  --bs-body-color: var(--em-on-surface-variant);
+  --bs-body-color-rgb: var(--em-on-surface-variant-rgb);
+  --bs-body-bg: var(--em-background);
+  --bs-body-bg-rgb: var(--em-surface-rgb);
+  --bs-heading-color: var(--em-on-surface);
+  --bs-emphasis-color: var(--em-on-surface);
+  --bs-emphasis-color-rgb: var(--em-on-surface-rgb);
+  --bs-secondary-color: var(--em-muted);
+  --bs-secondary-bg: var(--em-surface-container);
+  --bs-tertiary-bg: var(--em-surface-lowest);
+  --bs-border-color: var(--em-divider);
+
+  // Liens et focus
+  --bs-link-color: var(--em-primary);
+  --bs-link-color-rgb: var(--em-primary-rgb);
+  --bs-link-hover-color: var(--em-primary-hover);
+  --bs-link-hover-color-rgb: var(--em-primary-hover-rgb);
+  --bs-focus-ring-color: rgba(var(--em-primary-rgb), 0.25);
+
+  // Couleurs sémantiques
+  @include bs-color(primary, var(--em-primary), var(--em-primary-rgb), var(--em-primary-20));
+  @include bs-color(success, var(--em-primary), var(--em-primary-rgb), var(--em-primary-20));
+  @include bs-color(info, var(--em-tertiary), var(--em-tertiary-rgb), var(--em-tertiary-20));
+  @include bs-color(warning, var(--em-secondary), var(--em-secondary-rgb), var(--em-secondary-20));
+  @include bs-color(danger, var(--em-error), var(--em-error-rgb), var(--em-error-active));
+  --bs-dark: var(--em-neutral-20);
+  --bs-dark-rgb: var(--em-neutral-dark-rgb);
+}
+
+// Typographie
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: var(--em-font-headline);
+  font-weight: 700;
+}
+
+.btn,
+.badge,
+.form-label,
+.form-text,
+.nav-link,
+.dropdown-item,
+.page-link {
+  font-family: var(--em-font-label);
+}
+
+// Boutons
+// Correspondance avec les boutons de la planche :
+//   Primary → .btn-primary      Secondary → .btn-secondary
+//   Inverted → .btn-dark        Outlined → .btn-outline-secondary
+.btn-primary {
+  @include btn-solid(
+    var(--em-primary),
+    var(--em-on-primary),
+    var(--em-primary-hover),
+    var(--em-primary-active),
+    var(--em-primary-rgb)
+  );
+}
+
+.btn-secondary {
+  @include btn-solid(
+    var(--em-surface-container),
+    var(--em-on-surface),
+    var(--em-surface-dim),
+    var(--em-neutral-80),
+    var(--em-neutral-dark-rgb)
+  );
+}
+
+.btn-dark {
+  @include btn-solid(
+    var(--em-surface-inverse),
+    #ffffff,
+    var(--em-neutral-10),
+    var(--em-neutral-0),
+    var(--em-neutral-dark-rgb)
+  );
+}
+
+.btn-success {
+  @include btn-solid(
+    var(--em-primary),
+    var(--em-on-primary),
+    var(--em-primary-hover),
+    var(--em-primary-active),
+    var(--em-primary-rgb)
+  );
+}
+
+.btn-info {
+  @include btn-solid(
+    var(--em-tertiary),
+    #ffffff,
+    var(--em-tertiary-hover),
+    var(--em-tertiary-active),
+    var(--em-tertiary-rgb)
+  );
+}
+
+.btn-warning {
+  @include btn-solid(
+    var(--em-secondary),
+    #ffffff,
+    var(--em-secondary-hover),
+    var(--em-secondary-active),
+    var(--em-secondary-rgb)
+  );
+}
+
+.btn-danger {
+  @include btn-solid(
+    var(--em-error),
+    #ffffff,
+    var(--em-error-hover),
+    var(--em-error-active),
+    var(--em-error-rgb)
+  );
+}
+
+.btn-outline-primary {
+  @include btn-outline(
+    var(--em-primary),
+    var(--em-primary),
+    var(--em-primary),
+    var(--em-on-primary),
+    var(--em-primary-rgb)
+  );
+}
+
+.btn-outline-secondary {
+  @include btn-outline(
+    var(--em-on-surface),
+    var(--em-outline-variant),
+    var(--em-surface-container),
+    var(--em-on-surface),
+    var(--em-neutral-dark-rgb)
+  );
+}
+
+.btn-outline-danger {
+  @include btn-outline(
+    var(--em-error),
+    var(--em-error),
+    var(--em-error),
+    #ffffff,
+    var(--em-error-rgb)
+  );
+}
+
+.btn-link {
+  --bs-btn-color: var(--em-primary);
+  --bs-btn-hover-color: var(--em-primary-hover);
+  --bs-btn-active-color: var(--em-primary-active);
+  --bs-btn-focus-shadow-rgb: var(--em-primary-rgb);
+}
+
+// Formulaires
+.form-control,
+.form-select {
+  &:focus {
+    border-color: var(--em-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--em-primary-rgb), 0.25);
+  }
+}
+
+.form-check-input {
+  &:checked {
+    background-color: var(--em-primary);
+    border-color: var(--em-primary);
+  }
+
+  &:focus {
+    border-color: var(--em-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--em-primary-rgb), 0.25);
+  }
+}
+
+// Bootstrap teinte en bleu le bouton d'un interrupteur désactivé qui reçoit le focus.
+.form-switch .form-check-input:focus:not(:checked) {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2334a373'/%3e%3c/svg%3e");
+}
+
+// Composants
+.card {
+  --bs-card-bg: var(--em-surface-lowest);
+  --bs-card-border-color: var(--em-divider);
+}
+
+.nav-pills {
+  --bs-nav-pills-link-active-bg: var(--em-primary);
+  --bs-nav-pills-link-active-color: var(--em-on-primary);
+}
+
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: var(--em-primary);
+  --bs-dropdown-link-active-color: var(--em-on-primary);
+}
+
+.pagination {
+  --bs-pagination-color: var(--em-primary);
+  --bs-pagination-hover-color: var(--em-primary-hover);
+  --bs-pagination-focus-color: var(--em-primary-hover);
+  --bs-pagination-active-bg: var(--em-primary);
+  --bs-pagination-active-border-color: var(--em-primary);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(var(--em-primary-rgb), 0.25);
+}
+
+.list-group {
+  --bs-list-group-active-bg: var(--em-primary);
+  --bs-list-group-active-border-color: var(--em-primary);
+}
+
+.progress {
+  --bs-progress-bg: var(--em-surface-container);
+  --bs-progress-bar-bg: var(--em-primary);
+}

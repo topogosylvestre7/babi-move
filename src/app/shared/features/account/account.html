@@ -1,0 +1,249 @@
+@if (currentUser(); as user) {
+  <div class="profile-page">
+    <!-- Header -->
+    <div class="profile-header">
+      <div class="header-bg"></div>
+      <div class="header-content">
+        <div class="avatar-section">
+          <div class="avatar">
+            <span>{{ initials() }}</span>
+          </div>
+          <div class="user-info">
+            <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+            <p class="role">Membre Babi Move</p>
+            <p class="location"><i class="bi bi-geo-alt"></i> Grand Abidjan</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button
+            class="btn btn--primary"
+            *ngIf="!editMode()"
+            (click)="toggleEditMode(); setTab('settings')"
+          >
+            <i class="bi bi-pencil"></i>
+            Modifier
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="profile-stats">
+        @for (stat of userStats(); track stat.label) {
+          <div class="stat-item">
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+      @for (tab of tabs; track tab.id) {
+        <button class="tab-btn" [class.active]="activeTab() === tab.id" (click)="setTab(tab.id)">
+          <i class="bi" [ngClass]="tab.icon"></i>
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <!-- Content -->
+    <div class="profile-content">
+      <!-- Overview Tab -->
+      @if (activeTab() === 'overview') {
+        <div class="tab-content">
+          <div class="content-grid">
+            <div class="info-card">
+              <h3>À propos</h3>
+              <p class="bio">
+                Passionné(e) de mobilité urbaine, j'utilise Babi Move pour optimiser mes trajets
+                quotidiens à Abidjan.
+              </p>
+            </div>
+
+            <div class="info-card">
+              <h3>Informations</h3>
+              <div class="info-list">
+                <div class="info-item">
+                  <i class="bi bi-envelope"></i>
+                  <div>
+                    <span class="info-label">Email</span>
+                    <span class="info-value">{{ user.email }}</span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <i class="bi bi-wallet2"></i>
+                  <div>
+                    <span class="info-label">Budget max par trajet</span>
+                    <span class="info-value"
+                      >{{ user.preferences.maxBudgetFcfa ?? 'Non défini' }} FCFA</span
+                    >
+                  </div>
+                </div>
+                <div class="info-item">
+                  <i class="bi bi-signpost-2"></i>
+                  <div>
+                    <span class="info-label">Mode préféré</span>
+                    <span class="info-value">{{ modeLabel(user.preferences.preferredMode) }}</span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <i class="bi bi-calendar"></i>
+                  <div>
+                    <span class="info-label">Membre depuis</span>
+                    <span class="info-value">{{ formatDate(user.createdAt) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Settings Tab -->
+      @if (activeTab() === 'settings') {
+        <div class="tab-content">
+          <div class="settings-card">
+            <h3>Informations personnelles & Préférences</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Prénom</label>
+                <input type="text" [(ngModel)]="editedUser.firstName" [disabled]="!editMode()" />
+              </div>
+              <div class="form-group">
+                <label>Nom</label>
+                <input type="text" [(ngModel)]="editedUser.lastName" [disabled]="!editMode()" />
+              </div>
+              <div class="form-group full-width">
+                <label>Email</label>
+                <input type="email" [(ngModel)]="editedUser.email" [disabled]="!editMode()" />
+              </div>
+
+              <div class="form-group">
+                <label>Budget max par trajet (FCFA)</label>
+                <input
+                  type="number"
+                  [(ngModel)]="editedUser.maxBudgetFcfa"
+                  [disabled]="!editMode()"
+                />
+              </div>
+              <div class="form-group">
+                <label>Mode de transport préféré</label>
+                <select [(ngModel)]="editedUser.preferredMode" [disabled]="!editMode()">
+                  <option value="gbaka">Gbaka</option>
+                  <option value="woro-woro">Woro-woro</option>
+                  <option value="sotra">Bus SOTRA</option>
+                  <option value="bateau-bus">Bateau-bus</option>
+                  <option value="vtc">VTC</option>
+                  <option value="marche">Marche</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions" *ngIf="editMode()">
+              <button class="btn btn--outline" (click)="toggleEditMode()">Annuler</button>
+              <button class="btn btn--primary" (click)="saveProfile()">Enregistrer</button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Security Tab -->
+      @if (activeTab() === 'security') {
+        <div class="tab-content">
+          <div class="security-card">
+            <h3>Mot de passe</h3>
+            <p>Sécurisez l'accès à votre compte Babi Move.</p>
+            <button class="btn btn--outline" (click)="changePassword()">
+              <i class="bi bi-key"></i>
+              Changer le mot de passe
+            </button>
+          </div>
+
+          <div class="security-card">
+            <h3>Authentification à deux facteurs</h3>
+            <p>Ajoutez une couche de sécurité supplémentaire</p>
+            <div class="two-factor">
+              <span class="status status--inactive">Non activé</span>
+              <button class="btn btn--primary" (click)="enable2FA()">
+                <i class="bi bi-shield-check"></i>
+                Activer 2FA
+              </button>
+            </div>
+          </div>
+
+          <div class="security-card">
+            <h3>Sessions actives</h3>
+            <div class="sessions-list">
+              <div class="session-item">
+                <i class="bi bi-laptop"></i>
+                <div class="session-info">
+                  <span class="session-device">Navigateur actuel</span>
+                  <span class="session-location">Abidjan, CI • Actif maintenant</span>
+                </div>
+                <span class="session-current">Session actuelle</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Notifications Tab -->
+      @if (activeTab() === 'notifications') {
+        <div class="tab-content">
+          <div class="notifications-card">
+            <h3>Préférences de notification</h3>
+            <div class="notification-options">
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-label">Notifications par email</span>
+                  <span class="notification-desc">Recevez les mises à jour par email</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" [(ngModel)]="notifications.email" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-label">Notifications push</span>
+                  <span class="notification-desc"
+                    >Notifications en temps réel sur votre navigateur</span
+                  >
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" [(ngModel)]="notifications.push" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-label">Alertes trafic</span>
+                  <span class="notification-desc">Soyez alerté des perturbations majeures</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" [(ngModel)]="notifications.sms" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-label">Newsletter</span>
+                  <span class="notification-desc">Actualités et conseils hebdomadaires</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" [(ngModel)]="notifications.newsletter" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="form-actions" style="border-top: none; padding-top: 0">
+              <button class="btn btn--primary" (click)="saveNotifications()">
+                Enregistrer les préférences
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

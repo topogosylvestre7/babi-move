@@ -1,0 +1,332 @@
+[
+  {
+    "id": "plateau-gare-lagunaire",
+    "name": "Gare lagunaire du Plateau",
+    "commune": "plateau",
+    "position": {
+      "lat": 5.3232,
+      "lng": -4.0178
+    },
+    "type": "gare"
+  },
+  {
+    "id": "plateau-cathedrale",
+    "name": "Cathédrale Saint-Paul",
+    "commune": "plateau",
+    "position": {
+      "lat": 5.3285,
+      "lng": -4.0196
+    },
+    "type": "autre"
+  },
+  {
+    "id": "plateau-centre-affaires",
+    "name": "Plateau – Centre des affaires",
+    "commune": "plateau",
+    "position": {
+      "lat": 5.3197,
+      "lng": -4.0167
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "adjame-gare-nord",
+    "name": "Gare routière d'Adjamé (Gare Nord)",
+    "commune": "adjame",
+    "position": {
+      "lat": 5.356,
+      "lng": -4.023
+    },
+    "type": "gare"
+  },
+  {
+    "id": "adjame-marche",
+    "name": "Marché d'Adjamé",
+    "commune": "adjame",
+    "position": {
+      "lat": 5.359,
+      "lng": -4.026
+    },
+    "type": "marche"
+  },
+  {
+    "id": "adjame-williamsville",
+    "name": "Williamsville",
+    "commune": "adjame",
+    "position": {
+      "lat": 5.367,
+      "lng": -4.025
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "attecoube-locodjro",
+    "name": "Locodjro",
+    "commune": "attecoube",
+    "position": {
+      "lat": 5.341,
+      "lng": -4.042
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "cocody-universite",
+    "name": "Université Félix Houphouët-Boigny",
+    "commune": "cocody",
+    "position": {
+      "lat": 5.3445,
+      "lng": -3.991
+    },
+    "type": "universite"
+  },
+  {
+    "id": "cocody-chu",
+    "name": "CHU de Cocody",
+    "commune": "cocody",
+    "position": {
+      "lat": 5.343,
+      "lng": -3.997
+    },
+    "type": "hopital"
+  },
+  {
+    "id": "cocody-deux-plateaux",
+    "name": "Les II Plateaux",
+    "commune": "cocody",
+    "position": {
+      "lat": 5.368,
+      "lng": -4.0
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "cocody-angre",
+    "name": "Angré 8e tranche",
+    "commune": "cocody",
+    "position": {
+      "lat": 5.391,
+      "lng": -3.989
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "cocody-riviera-golf",
+    "name": "Riviera Golf",
+    "commune": "cocody",
+    "position": {
+      "lat": 5.35,
+      "lng": -3.94
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "cocody-riviera-palmeraie",
+    "name": "Riviera Palmeraie",
+    "commune": "cocody",
+    "position": {
+      "lat": 5.372,
+      "lng": -3.954
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "yopougon-siporex",
+    "name": "Siporex",
+    "commune": "yopougon",
+    "position": {
+      "lat": 5.347,
+      "lng": -4.078
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "yopougon-niangon",
+    "name": "Niangon Sud",
+    "commune": "yopougon",
+    "position": {
+      "lat": 5.325,
+      "lng": -4.11
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "yopougon-sicogi",
+    "name": "Sicogi",
+    "commune": "yopougon",
+    "position": {
+      "lat": 5.338,
+      "lng": -4.085
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "yopougon-gesco",
+    "name": "Gesco",
+    "commune": "yopougon",
+    "position": {
+      "lat": 5.333,
+      "lng": -4.06
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "abobo-gare",
+    "name": "Gare d'Abobo",
+    "commune": "abobo",
+    "position": {
+      "lat": 5.418,
+      "lng": -4.015
+    },
+    "type": "gare"
+  },
+  {
+    "id": "abobo-sagbe",
+    "name": "Abobo Sagbé",
+    "commune": "abobo",
+    "position": {
+      "lat": 5.43,
+      "lng": -4.03
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "abobo-pk18",
+    "name": "PK 18",
+    "commune": "abobo",
+    "position": {
+      "lat": 5.46,
+      "lng": -4.045
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "anyama-gare",
+    "name": "Gare d'Anyama",
+    "commune": "anyama",
+    "position": {
+      "lat": 5.493,
+      "lng": -4.05
+    },
+    "type": "gare"
+  },
+  {
+    "id": "marcory-zone4",
+    "name": "Marcory Zone 4",
+    "commune": "marcory",
+    "position": {
+      "lat": 5.298,
+      "lng": -3.993
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "marcory-residentiel",
+    "name": "Marcory Résidentiel",
+    "commune": "marcory",
+    "position": {
+      "lat": 5.307,
+      "lng": -3.985
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "treichville-marche",
+    "name": "Marché de Treichville",
+    "commune": "treichville",
+    "position": {
+      "lat": 5.295,
+      "lng": -4.008
+    },
+    "type": "marche"
+  },
+  {
+    "id": "treichville-port",
+    "name": "Port d'Abidjan",
+    "commune": "treichville",
+    "position": {
+      "lat": 5.278,
+      "lng": -4.01
+    },
+    "type": "autre"
+  },
+  {
+    "id": "treichville-gare-lagunaire",
+    "name": "Gare lagunaire de Treichville",
+    "commune": "treichville",
+    "position": {
+      "lat": 5.308,
+      "lng": -4.015
+    },
+    "type": "gare"
+  },
+  {
+    "id": "koumassi-grand-marche",
+    "name": "Grand marché de Koumassi",
+    "commune": "koumassi",
+    "position": {
+      "lat": 5.297,
+      "lng": -3.952
+    },
+    "type": "marche"
+  },
+  {
+    "id": "koumassi-remblais",
+    "name": "Remblais",
+    "commune": "koumassi",
+    "position": {
+      "lat": 5.29,
+      "lng": -3.96
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "port-bouet-aeroport",
+    "name": "Aéroport Félix Houphouët-Boigny",
+    "commune": "port-bouet",
+    "position": {
+      "lat": 5.261,
+      "lng": -3.926
+    },
+    "type": "gare"
+  },
+  {
+    "id": "port-bouet-vridi",
+    "name": "Vridi",
+    "commune": "port-bouet",
+    "position": {
+      "lat": 5.25,
+      "lng": -3.995
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "port-bouet-gonzagueville",
+    "name": "Gonzagueville",
+    "commune": "port-bouet",
+    "position": {
+      "lat": 5.255,
+      "lng": -3.895
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "bingerville-centre",
+    "name": "Bingerville centre",
+    "commune": "bingerville",
+    "position": {
+      "lat": 5.355,
+      "lng": -3.887
+    },
+    "type": "quartier"
+  },
+  {
+    "id": "songon-centre",
+    "name": "Songon centre",
+    "commune": "songon",
+    "position": {
+      "lat": 5.315,
+      "lng": -4.26
+    },
+    "type": "quartier"
+  }
+]

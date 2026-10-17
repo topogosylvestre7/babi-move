@@ -1,0 +1,651 @@
+<section class="result-page">
+  <!-- ============================================================
+       HERO + RECHERCHE
+       ============================================================ -->
+  <header class="result-hero">
+    <div class="result-hero__inner">
+      <span class="result-hero__eyebrow"> Réseau Gbaka, Woro-woro & Bateau-bus synchronisé </span>
+
+      <h1 class="result-hero__title">Se déplacer vite à <span>Babi</span></h1>
+
+      <p class="result-hero__subtitle">
+        Comparez les itinéraires en FCFA et en minutes à travers les 13 communes et la lagune Ébrié.
+      </p>
+
+      <div class="search-card">
+        <!-- Départ -->
+        <div class="search-card__row">
+          <span class="search-card__dot search-card__dot--start" aria-hidden="true"></span>
+          <div class="search-card__field">
+            <label class="search-card__label" for="origin">Point de départ</label>
+            <input
+              id="origin"
+              type="text"
+              class="search-card__input"
+              placeholder="Plateau, Yopougon, Cocody…"
+              [ngModel]="originText()"
+              (ngModelChange)="onOriginInput($event)"
+              (focus)="onFocus('origin')"
+              (blur)="onBlur()"
+              name="origin"
+              autocomplete="off"
+            />
+          </div>
+          <button
+            type="button"
+            class="search-card__action"
+            aria-label="Utiliser ma position"
+            [disabled]="locating()"
+            (click)="useMyPosition()"
+          >
+            <i
+              class="bi"
+              [ngClass]="locating() ? 'bi-hourglass-split' : 'bi-crosshair'"
+              aria-hidden="true"
+            ></i>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="search-card__swap"
+          aria-label="Inverser départ et destination"
+          (click)="swap()"
+        >
+          <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
+        </button>
+
+        <!-- Destination -->
+        <div class="search-card__row">
+          <span class="search-card__dot search-card__dot--end" aria-hidden="true"></span>
+          <div class="search-card__field">
+            <label class="search-card__label" for="destination">Où vas-tu ? (Destination)</label>
+            <input
+              id="destination"
+              type="text"
+              class="search-card__input"
+              placeholder="Marcory, Treichville…"
+              [ngModel]="destinationText()"
+              (ngModelChange)="onDestinationInput($event)"
+              (focus)="onFocus('destination')"
+              (blur)="onBlur()"
+              name="destination"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        @if (suggestions().length > 0 && activeField()) {
+          <ul class="search-card__suggestions" role="listbox" (mousedown)="$event.preventDefault()">
+            @for (s of suggestions(); track s.id) {
+              <li>
+                <button type="button" class="search-card__suggestion" (click)="selectSuggestion(s)">
+                  <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                  <span class="search-card__suggestion-label">{{ s.label }}</span>
+                  <span class="search-card__suggestion-detail">{{ s.detail }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (locationError()) {
+          <p class="search-card__error" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            {{ locationError() }}
+          </p>
+        }
+
+        @if (formError()) {
+          <p class="search-card__error" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            {{ formError() }}
+          </p>
+        }
+
+        <!-- Options -->
+        <div class="search-card__options">
+          <button
+            type="button"
+            class="chip"
+            [class.chip--active]="departureMode() === 'now'"
+            (click)="setDepartureMode('now')"
+          >
+            <i class="bi bi-clock" aria-hidden="true"></i>
+            Partir maintenant
+          </button>
+          <button
+            type="button"
+            class="chip"
+            [class.chip--active]="departureMode() === '30min'"
+            (click)="setDepartureMode('30min')"
+          >
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            Dans 30 min
+          </button>
+          <button
+            type="button"
+            class="chip"
+            [class.chip--active]="departureMode() === '2h'"
+            (click)="setDepartureMode('2h')"
+          >
+            <i class="bi bi-calendar" aria-hidden="true"></i>
+            Dans 2 h
+          </button>
+          <button
+            type="button"
+            class="chip chip--lagune"
+            [class.chip--active]="includeLagune() && !laguneUnavailable()"
+            [disabled]="laguneUnavailable()"
+            [attr.aria-pressed]="includeLagune()"
+            [title]="
+              laguneUnavailable()
+                ? 'Aucune option bateau-bus sur ce trajet'
+                : 'Afficher ou masquer les trajets en bateau-bus'
+            "
+            (click)="toggleLagune()"
+          >
+            <i class="bi bi-water" aria-hidden="true"></i>
+            {{ includeLagune() ? 'Lagune incluse' : 'Lagune exclue' }}
+            @if (laguneCount() > 0) {
+              <span class="chip__count">{{ laguneCount() }}</span>
+            }
+          </button>
+        </div>
+
+        @if (laguneUnavailable()) {
+          <p class="search-card__hint">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            Aucune liaison bateau-bus sur ce trajet : l'option lagune ne change rien ici.
+          </p>
+        }
+
+        <button class="btn btn-primary search-card__go" type="button" (click)="compute(true)">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          Rechercher mon trajet
+          @if (summary(); as s) {
+            <span class="search-card__go-meta">
+              {{ s.count }} trajet{{ s.count > 1 ? 's' : '' }}
+            </span>
+          }
+        </button>
+      </div>
+
+      <!-- Recherches récentes -->
+      @if (recents().length > 0) {
+        <div class="recents">
+          <span class="recents__label">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            Récents
+          </span>
+          @for (r of recents(); track r.from.label + r.to.label) {
+            <button type="button" class="recents__item" (click)="applyRecent(r)">
+              {{ r.from.label }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              {{ r.to.label }}
+            </button>
+          }
+          <button
+            type="button"
+            class="recents__clear"
+            aria-label="Effacer les recherches récentes"
+            (click)="clearRecents()"
+          >
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <!-- ============================================================
+       COMMUNES (raccourcis)
+       ============================================================ -->
+  <section class="block">
+    <header class="block__head">
+      <h2 class="block__title">
+        <i class="bi bi-pin-map-fill" aria-hidden="true"></i>
+        Communes & Pôles de correspondance
+      </h2>
+      <button type="button" class="block__link block__link--btn" (click)="toggleAllCommunes()">
+        {{ showAllCommunes() ? 'Voir moins' : 'Toutes les communes' }}
+      </button>
+    </header>
+
+    <p class="block__hint">
+      Un clic remplit le champ
+      <strong>{{ lastField() === 'origin' ? 'Départ' : 'Destination' }}</strong
+      >.
+    </p>
+
+    <div class="communes">
+      @for (c of popularCommunes(); track c.id) {
+        <button type="button" class="commune" (click)="usePopularCommune(c)">
+          <span class="commune__dot"></span>
+          {{ c.name }}
+        </button>
+      }
+      @if (showAllCommunes()) {
+        @for (c of allCommunes(); track c.id) {
+          @if (!c.popular) {
+            <button type="button" class="commune commune--muted" (click)="usePopularCommune(c)">
+              <span class="commune__dot"></span>
+              {{ c.name }}
+            </button>
+          }
+        }
+      }
+    </div>
+  </section>
+
+  <!-- ============================================================
+       RÉSULTATS + CARTE (côte à côte sur grand écran)
+       ============================================================ -->
+  <div class="workspace">
+    <!-- ----- Résultats ----- -->
+    <section class="workspace__results">
+      <header class="block__head">
+        <h2 class="block__title">
+          <i class="bi bi-signpost-2-fill" aria-hidden="true"></i>
+          Trajets recommandés
+        </h2>
+
+        <div class="block__actions">
+          <div class="sort-toggle" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="sortBy() === 'duration'"
+              [class.is-active]="sortBy() === 'duration'"
+              (click)="setSort('duration')"
+            >
+              <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+              Le plus rapide
+            </button>
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="sortBy() === 'cost'"
+              [class.is-active]="sortBy() === 'cost'"
+              (click)="setSort('cost')"
+            >
+              <i class="bi bi-piggy-bank" aria-hidden="true"></i>
+              Le moins cher
+            </button>
+          </div>
+        </div>
+      </header>
+
+      @if (!origin() || !destination()) {
+        <div class="state state--empty">
+          <i class="bi bi-compass" aria-hidden="true"></i>
+          <p class="state__title">Prêt à comparer ?</p>
+          <p class="state__text">
+            Choisis un départ et une destination : tu verras ici les trajets, leur prix en FCFA et
+            leur durée.
+          </p>
+        </div>
+      } @else if (searching()) {
+        <div class="cards">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton"></div>
+          }
+        </div>
+      } @else if (sortedItineraries().length === 0) {
+        <div class="state state--empty">
+          <i class="bi bi-compass" aria-hidden="true"></i>
+          @if (hiddenCount() > 0) {
+            <p class="state__title">Tous les trajets passent par la lagune</p>
+            <p class="state__text">Tu as exclu le bateau-bus : il n'y a pas d'autre option ici.</p>
+            <button type="button" class="btn btn-primary" (click)="toggleLagune()">
+              <i class="bi bi-water" aria-hidden="true"></i>
+              Inclure la lagune
+            </button>
+          } @else {
+            <p class="state__title">Aucun itinéraire trouvé</p>
+            <p class="state__text">
+              Essaie un autre point de départ ou décale ton heure de départ.
+            </p>
+          }
+        </div>
+      } @else {
+        <!-- Résumé -->
+        @if (summary(); as s) {
+          <p class="results-summary">
+            <strong>{{ s.count }} trajet{{ s.count > 1 ? 's' : '' }}</strong>
+            <span>dès {{ s.fastest }} min</span>
+            <span>à partir de {{ s.cheapest }} FCFA</span>
+          </p>
+        }
+
+        @if (hiddenCount() > 0) {
+          <p class="results-notice">
+            <i class="bi bi-water" aria-hidden="true"></i>
+            {{ hiddenCount() }} trajet{{ hiddenCount() > 1 ? 's' : '' }} bateau-bus masqué{{
+              hiddenCount() > 1 ? 's' : ''
+            }}
+            <button type="button" (click)="toggleLagune()">Réafficher</button>
+          </p>
+        }
+
+        <div class="cards">
+          @for (it of sortedItineraries(); track it.id; let idx = $index) {
+            <article
+              class="card"
+              [class.card--best]="idx === 0"
+              [class.card--selected]="selectedItinerary()?.id === it.id"
+              (click)="selectItinerary(it)"
+            >
+              <header class="card__head">
+                <div class="card__tags">
+                  @for (tag of it.tags; track tag) {
+                    <span class="card__tag" [class]="'card__tag--' + tag">
+                      <i class="bi" [ngClass]="tagIcon(tag)" aria-hidden="true"></i>
+                      {{ tagLabel(tag) }}
+                    </span>
+                  }
+                  @if (it.alertIds.length > 0) {
+                    <span class="card__tag card__tag--alert">
+                      <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                      {{ it.alertIds.length }} alerte{{ it.alertIds.length > 1 ? 's' : '' }}
+                    </span>
+                  }
+                  <span class="card__tag card__tag--neutral">
+                    <i class="bi bi-shuffle" aria-hidden="true"></i>
+                    {{ it.transfers }} corresp.
+                  </span>
+                  <span class="card__tag card__tag--neutral">
+                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                    Confort {{ it.comfort }}/5
+                  </span>
+                </div>
+                <div class="card__meta">
+                  <span class="card__meta-item">
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+                    {{ it.durationMin }} min
+                  </span>
+                  <span class="card__meta-item card__meta-item--accent">
+                    {{ it.costMinFcfa }}–{{ it.costMaxFcfa }} FCFA
+                  </span>
+                </div>
+              </header>
+
+              <!-- Modes (vue compacte) -->
+              <div class="card__modes">
+                @for (step of it.steps; track $index; let last = $last) {
+                  <span class="card__mode" [style.--mode-color]="modeColor(step.mode)">
+                    <i class="bi" [ngClass]="modeIcon(step.mode)" aria-hidden="true"></i>
+                    {{ modeLabel(step.mode) }}
+                    <small>{{ step.durationMin }} min</small>
+                  </span>
+                  @if (!last) {
+                    <i class="bi bi-chevron-right card__modes-sep" aria-hidden="true"></i>
+                  }
+                }
+              </div>
+
+              <!-- Détails (dépliables) -->
+              @if (isExpanded(it.id)) {
+                <ol class="card__steps">
+                  @for (step of it.steps; track $index) {
+                    <li class="card__step">
+                      <span class="card__step-icon" [style.--mode-color]="modeColor(step.mode)">
+                        <i class="bi" [ngClass]="modeIcon(step.mode)" aria-hidden="true"></i>
+                      </span>
+                      <div class="card__step-body">
+                        <span class="card__step-mode">{{ modeLabel(step.mode) }}</span>
+                        <p class="card__step-instruction">{{ step.instruction }}</p>
+                      </div>
+                      <div class="card__step-meta">
+                        <span class="card__step-duration">{{ step.durationMin }} min</span>
+                        <span class="card__step-cost">
+                          {{ step.costFcfa === 0 ? 'Gratuit' : step.costFcfa + ' FCFA' }}
+                        </span>
+                      </div>
+                    </li>
+                  }
+                </ol>
+
+                @if (it.alertIds.length > 0) {
+                  <ul class="card__alert-list">
+                    @for (alertId of it.alertIds; track alertId) {
+                      @if (alertById(alertId); as alert) {
+                        <li
+                          class="card__alert"
+                          [class]="'card__alert--' + alertTone(alert.priority)"
+                        >
+                          <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                          <span>{{ alert.title }}</span>
+                          @if (alert.estimatedDurationMin) {
+                            <span class="card__alert-eta">
+                              +{{ alert.estimatedDurationMin }} min
+                            </span>
+                          }
+                        </li>
+                      }
+                    }
+                  </ul>
+                }
+              }
+
+              <footer class="card__foot">
+                <span class="card__arrival">
+                  <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                  Arrivée vers <strong>{{ arrivalTime(it) }}</strong>
+                </span>
+                <div class="card__actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    [attr.aria-expanded]="isExpanded(it.id)"
+                    (click)="toggleDetails(it, $event)"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="isExpanded(it.id) ? 'bi-chevron-up' : 'bi-chevron-down'"
+                      aria-hidden="true"
+                    ></i>
+                    {{ isExpanded(it.id) ? 'Masquer' : 'Détails' }}
+                  </button>
+                  <a
+                    class="btn btn-outline-secondary card__maps"
+                    [href]="mapsUrl(it)"
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="Ouvrir dans Google Maps"
+                    title="Ouvrir dans Google Maps"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="startItinerary(it, $event)"
+                  >
+                    <i class="bi bi-navigation-fill" aria-hidden="true"></i>
+                    Démarrer
+                  </button>
+                </div>
+              </footer>
+            </article>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- ----- Carte (toujours dans le DOM) ----- -->
+    <aside class="workspace__map">
+      <header class="block__head">
+        <h2 class="block__title">
+          <i class="bi bi-map-fill" aria-hidden="true"></i>
+          Aperçu sur la carte
+        </h2>
+        @if (selectedItinerary()?.alertIds?.length) {
+          <span class="block__meta">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            Zones rouges = alertes
+          </span>
+        }
+      </header>
+
+      <div class="map-wrap">
+        <div #mapHost class="map"></div>
+
+        @if (!origin() || !destination()) {
+          <div class="map__overlay">
+            <i class="bi bi-geo-alt" aria-hidden="true"></i>
+            <p>Choisis un départ et une destination pour voir l'itinéraire.</p>
+          </div>
+        }
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============================================================
+       ALERTES
+       ============================================================ -->
+  @if (topAlerts().length > 0) {
+    <section class="block">
+      <header class="block__head">
+        <h2 class="block__title">
+          <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+          Trafic & Perturbations majeures
+        </h2>
+        <a class="block__link" routerLink="/alertes">Voir les {{ alertCount() }} alertes</a>
+      </header>
+
+      <div class="alerts-row">
+        @for (a of topAlerts(); track a.id) {
+          <article class="alert-chip" [class]="'alert-chip--' + alertTone(a.priority)">
+            <header class="alert-chip__head">
+              <span class="alert-chip__tag">
+                <i class="bi bi-circle-fill" aria-hidden="true"></i>
+                {{ alertTagLabel(a.priority) }}
+              </span>
+              @if (a.estimatedDurationMin) {
+                <span class="alert-chip__eta">+{{ a.estimatedDurationMin }} min</span>
+              }
+            </header>
+            <h3 class="alert-chip__title">{{ a.title }}</h3>
+            <p class="alert-chip__desc">{{ a.description }}</p>
+            <footer class="alert-chip__foot">
+              <span>{{ a.updatedAt | date: 'HH:mm' }}</span>
+              @if (a.advice) {
+                <span class="alert-chip__advice">{{ a.advice | slice: 0 : 40 }}…</span>
+              }
+            </footer>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ============================================================
+       AUTOUR DE MOI
+       ============================================================ -->
+  <section class="block">
+    <header class="block__head">
+      <h2 class="block__title">
+        <i class="bi bi-broadcast-pin" aria-hidden="true"></i>
+        Moyens de transport autour de moi
+      </h2>
+      @if (!nearbyLoaded()) {
+        <button class="btn btn-primary" (click)="loadNearby()" [disabled]="nearbyLoading()">
+          @if (nearbyLoading()) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            Localisation…
+          } @else {
+            <i class="bi bi-crosshair" aria-hidden="true"></i>
+            Me localiser
+          }
+        </button>
+      } @else {
+        <button class="btn btn-outline-secondary" (click)="loadNearby()">
+          <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+          Actualiser
+        </button>
+      }
+    </header>
+
+    @if (!nearbyLoaded() && !nearbyLoading()) {
+      <div class="state state--empty">
+        <i class="bi bi-geo-alt" aria-hidden="true"></i>
+        <p class="state__title">Découvre les arrêts proches de toi</p>
+        <p class="state__text">
+          Clique sur « Me localiser » pour voir les gares, marchés et quartiers dans un rayon de 5
+          km.
+        </p>
+      </div>
+    } @else if (nearbyLoaded() && nearbyPlaces().length === 0) {
+      <div class="state state--empty">
+        <i class="bi bi-emoji-frown" aria-hidden="true"></i>
+        <p class="state__title">Aucun lieu connu dans un rayon de 5 km</p>
+      </div>
+    } @else if (nearbyLoaded()) {
+      <div class="nearby-filters">
+        <button
+          type="button"
+          class="chip"
+          [class.chip--active]="nearbyFilter() === 'tous'"
+          (click)="setNearbyFilter('tous')"
+        >
+          <i class="bi bi-grid-fill" aria-hidden="true"></i>
+          Tous
+        </button>
+        <button
+          type="button"
+          class="chip"
+          [class.chip--active]="nearbyFilter() === 'gare'"
+          (click)="setNearbyFilter('gare')"
+        >
+          <i class="bi bi-signpost-2-fill" aria-hidden="true"></i>
+          Gares
+        </button>
+        <button
+          type="button"
+          class="chip"
+          [class.chip--active]="nearbyFilter() === 'marche'"
+          (click)="setNearbyFilter('marche')"
+        >
+          <i class="bi bi-basket-fill" aria-hidden="true"></i>
+          Marchés
+        </button>
+        <button
+          type="button"
+          class="chip"
+          [class.chip--active]="nearbyFilter() === 'quartier'"
+          (click)="setNearbyFilter('quartier')"
+        >
+          <i class="bi bi-houses-fill" aria-hidden="true"></i>
+          Quartiers
+        </button>
+      </div>
+
+      <ul class="nearby-list">
+        @for (n of nearbyFiltered(); track n.place.id) {
+          <li class="nearby-item">
+            <span class="nearby-item__icon" aria-hidden="true">
+              <i class="bi" [ngClass]="nearbyPlaceIcon(n.place.type)"></i>
+            </span>
+            <div class="nearby-item__body">
+              <p class="nearby-item__name">{{ n.place.name }}</p>
+              <p class="nearby-item__meta">{{ n.communeName }} • {{ n.place.type }}</p>
+            </div>
+            <div class="nearby-item__right">
+              <span class="nearby-item__distance">{{ n.distanceKm.toFixed(1) }} km</span>
+              <button
+                type="button"
+                class="nearby-item__go"
+                aria-label="Utiliser comme destination"
+                (click)="useNearbyPlace(n.place); $event.stopPropagation()"
+              >
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</section>

@@ -1,0 +1,372 @@
+<section class="alerts-page">
+  <!-- HERO -->
+  <header class="alerts-hero">
+    <div class="alerts-hero__inner">
+      <span class="alerts-hero__eyebrow">
+        <span class="alerts-hero__dot" aria-hidden="true"></span>
+        Flux direct du Grand Abidjan
+      </span>
+
+      <h1 class="alerts-hero__title">Alertes <span>circulation</span> en temps réel</h1>
+
+      <p class="alerts-hero__subtitle">
+        Perturbations communautaires signalées et confirmées : embouteillages, accidents, travaux,
+        météo et perturbations de transport en commun.
+      </p>
+
+      <div class="alerts-stats">
+        <div class="alerts-stat">
+          <span class="alerts-stat__value">{{ counters().total }}</span>
+          <span class="alerts-stat__label">Total</span>
+        </div>
+        <div class="alerts-stat alerts-stat--critical">
+          <span class="alerts-stat__value">{{ counters().critical }}</span>
+          <span class="alerts-stat__label">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            Critiques
+          </span>
+        </div>
+        <div class="alerts-stat alerts-stat--high">
+          <span class="alerts-stat__value">{{ counters().high }}</span>
+          <span class="alerts-stat__label">
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            Élevées
+          </span>
+        </div>
+        <div class="alerts-stat alerts-stat--medium">
+          <span class="alerts-stat__value">{{ counters().medium }}</span>
+          <span class="alerts-stat__label">
+            <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+            Moyennes
+          </span>
+        </div>
+        <div class="alerts-stat alerts-stat--info">
+          <span class="alerts-stat__value">{{ counters().info }}</span>
+          <span class="alerts-stat__label">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            Infos
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BANDEAU FAVORIS -->
+  @if (auth.isLoggedIn() && hasFavorites()) {
+    <section class="alerts-favorites">
+      <div class="alerts-favorites__inner">
+        <header class="alerts-favorites__head">
+          <i class="bi bi-bookmark-fill" aria-hidden="true"></i>
+          <h2>Alertes sur tes trajets favoris</h2>
+          <span class="alerts-favorites__count">{{ favoriteAlerts().length }}</span>
+        </header>
+
+        <ul class="alerts-favorites__list">
+          @for (a of favoriteAlerts(); track a.id) {
+            <li>
+              <button type="button" class="alerts-favorites__item" (click)="selectAlert(a)">
+                <span
+                  class="alerts-favorites__dot"
+                  [class]="'alerts-favorites__dot--' + alertTone(a.priority)"
+                ></span>
+                <span class="alerts-favorites__text">{{ a.title }}</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+  }
+
+  <!-- FILTRES -->
+  <section class="alerts-filters">
+    <div class="alerts-filters__inner">
+      <header class="alerts-filters__head">
+        <h2 class="alerts-filters__title">
+          <i class="bi bi-funnel-fill" aria-hidden="true"></i>
+          Filtrer les alertes
+        </h2>
+        @if (hasActiveFilter()) {
+          <button type="button" class="alerts-filters__reset" (click)="resetFilters()">
+            <i class="bi bi-x-circle" aria-hidden="true"></i>
+            Réinitialiser
+          </button>
+        }
+      </header>
+
+      <div class="alerts-filters__row">
+        <span class="alerts-filters__label">Priorité</span>
+        <div class="chips">
+          @for (p of priorities; track p) {
+            <button
+              type="button"
+              class="chip"
+              [class]="'chip chip--' + alertTone(p) + (isPriorityActive(p) ? ' chip--active' : '')"
+              (click)="togglePriority(p)"
+            >
+              <i class="bi" [ngClass]="priorityIcon(p)" aria-hidden="true"></i>
+              {{ priorityLabel(p) }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="alerts-filters__row">
+        <span class="alerts-filters__label">Catégorie</span>
+        <div class="chips">
+          @for (c of categories; track c) {
+            <button
+              type="button"
+              class="chip"
+              [class.chip--active]="isCategoryActive(c)"
+              (click)="toggleCategory(c)"
+            >
+              <i class="bi" [ngClass]="categoryIcon(c)" aria-hidden="true"></i>
+              {{ categoryLabel(c) }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="alerts-filters__row">
+        <span class="alerts-filters__label">Commune</span>
+        <div class="chips">
+          @for (c of popularCommunes(); track c.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.chip--active]="isCommuneActive(c.id)"
+              (click)="toggleCommune(c.id)"
+            >
+              <span class="chip__dot"></span>
+              {{ c.name }}
+            </button>
+          }
+
+          @if (showAllCommunes()) {
+            @for (c of allCommunes(); track c.id) {
+              @if (!c.popular) {
+                <button
+                  type="button"
+                  class="chip chip--muted"
+                  [class.chip--active]="isCommuneActive(c.id)"
+                  (click)="toggleCommune(c.id)"
+                >
+                  <span class="chip__dot"></span>
+                  {{ c.name }}
+                </button>
+              }
+            }
+          }
+
+          <button type="button" class="chip chip--ghost" (click)="toggleAllCommunes()">
+            <i
+              class="bi"
+              [ngClass]="showAllCommunes() ? 'bi-dash-lg' : 'bi-plus-lg'"
+              aria-hidden="true"
+            ></i>
+            {{ showAllCommunes() ? 'Voir moins' : 'Toutes les communes' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORPS : LISTE + DÉTAIL -->
+  <div class="alerts-body">
+    <section class="alerts-list">
+      <header class="alerts-list__head">
+        <h2 class="alerts-list__title">
+          {{ visibleAlerts().length }} alerte{{ visibleAlerts().length > 1 ? 's' : '' }}
+          @if (hasActiveFilter()) {
+            <small>sur {{ counters().total }}</small>
+          }
+        </h2>
+        <span class="alerts-list__source">
+          <i class="bi bi-people-fill" aria-hidden="true"></i>
+          Signalements citoyens
+        </span>
+      </header>
+
+      @if (loadError()) {
+        <div class="state state--error" role="alert">
+          <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+          <div>
+            <p class="state__title">{{ loadError() }}</p>
+          </div>
+        </div>
+      } @else if (!loaded()) {
+        <div class="state state--loading" role="status">
+          <div class="spinner-border text-primary" aria-hidden="true"></div>
+          <p>Chargement des alertes…</p>
+        </div>
+      } @else if (visibleAlerts().length === 0) {
+        <div class="state state--empty">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <p class="state__title">Aucune alerte ne correspond</p>
+          <p class="state__text">Essaie de retirer un filtre ou d'élargir ta recherche.</p>
+          @if (hasActiveFilter()) {
+            <button type="button" class="btn btn-outline-primary" (click)="resetFilters()">
+              <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+              Réinitialiser les filtres
+            </button>
+          }
+        </div>
+      } @else {
+        <ul class="alerts-grid">
+          @for (a of visibleAlerts(); track a.id) {
+            <li>
+              <article
+                class="alert-card"
+                [class]="'alert-card alert-card--' + alertTone(a.priority)"
+                [class.alert-card--selected]="selectedAlert()?.id === a.id"
+                (click)="selectAlert(a)"
+                tabindex="0"
+                (keydown.enter)="selectAlert(a)"
+              >
+                <header class="alert-card__head">
+                  <span class="alert-card__badge">
+                    <i class="bi" [ngClass]="priorityIcon(a.priority)" aria-hidden="true"></i>
+                    {{ priorityLabel(a.priority) }}
+                  </span>
+                  <span class="alert-card__time">
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+                    {{ relativeUpdated(a) }}
+                  </span>
+                </header>
+
+                <h3 class="alert-card__title">{{ a.title }}</h3>
+                <p class="alert-card__desc">{{ a.description }}</p>
+
+                <div class="alert-card__meta">
+                  <span class="alert-card__cat">
+                    <i class="bi" [ngClass]="categoryIcon(a.category)" aria-hidden="true"></i>
+                    {{ categoryLabel(a.category) }}
+                  </span>
+                  @if (durationLabel(a); as dur) {
+                    <span class="alert-card__duration">
+                      <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                      {{ dur }}
+                    </span>
+                  }
+                </div>
+
+                <footer class="alert-card__foot">
+                  <div class="alert-card__communes">
+                    @for (c of communeNamesOf(a).slice(0, 2); track c) {
+                      <span class="alert-card__pill">{{ c }}</span>
+                    }
+                    @if (communeNamesOf(a).length > 2) {
+                      <span class="alert-card__pill alert-card__pill--muted">
+                        +{{ communeNamesOf(a).length - 2 }}
+                      </span>
+                    }
+                  </div>
+                  <i class="bi bi-arrow-right alert-card__arrow" aria-hidden="true"></i>
+                </footer>
+              </article>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- DÉTAIL -->
+    <aside class="alerts-detail" [class.alerts-detail--open]="!!selectedAlert()">
+      @if (selectedAlert(); as a) {
+        <header class="alerts-detail__head">
+          <span
+            class="alerts-detail__badge"
+            [class]="'alerts-detail__badge--' + alertTone(a.priority)"
+          >
+            <i class="bi" [ngClass]="priorityIcon(a.priority)" aria-hidden="true"></i>
+            {{ priorityLabel(a.priority) }}
+          </span>
+          <button
+            type="button"
+            class="alerts-detail__close"
+            aria-label="Fermer"
+            (click)="closeDetail()"
+          >
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        <h2 class="alerts-detail__title">{{ a.title }}</h2>
+
+        <div class="alerts-detail__meta">
+          <span>
+            <i class="bi" [ngClass]="categoryIcon(a.category)" aria-hidden="true"></i>
+            {{ categoryLabel(a.category) }}
+          </span>
+          <span>
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            {{ relativeUpdated(a) }}
+          </span>
+          @if (durationLabel(a); as dur) {
+            <span>
+              <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+              {{ dur }}
+            </span>
+          }
+        </div>
+
+        <p class="alerts-detail__desc">{{ a.description }}</p>
+
+        @if (a.advice) {
+          <div class="alerts-detail__advice">
+            <i class="bi bi-lightbulb-fill" aria-hidden="true"></i>
+            <div>
+              <strong>Conseil</strong>
+              <p>{{ a.advice }}</p>
+            </div>
+          </div>
+        }
+
+        @if (a.communes.length > 0) {
+          <div class="alerts-detail__section">
+            <h3 class="alerts-detail__section-title">
+              <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+              Communes concernées
+            </h3>
+            <div class="chips">
+              @for (id of a.communes; track id) {
+                <button
+                  type="button"
+                  class="chip chip--compact"
+                  [class.chip--active]="isCommuneActive(id)"
+                  (click)="toggleCommune(id)"
+                >
+                  <span class="chip__dot"></span>
+                  {{ communeName(id) }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <footer class="alerts-detail__foot">
+          <button type="button" class="btn btn-primary btn-block" (click)="goToItinerary(a)">
+            <i class="bi bi-signpost-2-fill" aria-hidden="true"></i>
+            Voir un itinéraire concerné
+          </button>
+        </footer>
+      } @else {
+        <div class="alerts-detail__empty">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <p>Sélectionne une alerte pour voir les détails.</p>
+        </div>
+      }
+    </aside>
+  </div>
+
+  @if (selectedAlert()) {
+    <div
+      class="alerts-detail__overlay"
+      role="presentation"
+      (click)="closeDetail()"
+      aria-hidden="true"
+    ></div>
+  }
+</section>

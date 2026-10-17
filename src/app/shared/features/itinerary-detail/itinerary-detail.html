@@ -1,0 +1,420 @@
+<section class="detail-page">
+  @if (notFound()) {
+    <div class="not-found">
+      <i class="bi bi-compass" aria-hidden="true"></i>
+      <h1>Itinéraire introuvable</h1>
+      <p>Cet itinéraire n'est plus disponible. Relance une recherche depuis la page d'accueil.</p>
+      <a class="btn btn-primary" routerLink="/">
+        <i class="bi bi-house" aria-hidden="true"></i>
+        Retour à l'accueil
+      </a>
+    </div>
+  } @else {
+    <!-- ============================================================
+         BANDEAU HAUT
+         ============================================================ -->
+    <div class="detail-topbar">
+      <div class="detail-topbar__inner">
+        <button type="button" class="detail-topbar__back" (click)="goBack()">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          Retour aux résultats
+        </button>
+
+        @if (itinerary(); as it) {
+          <div class="detail-topbar__meta">
+            <span class="chip-dot chip-dot--success">
+              <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+              Option #1 sur {{ segments() }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ============================================================
+         LAYOUT : itinéraire (gauche) + carte (droite)
+         ============================================================ -->
+    <div class="detail-layout">
+      <!-- ==========================================================
+           COLONNE GAUCHE : itinéraire
+           ========================================================== -->
+      <article class="itinerary-panel">
+        @if (itinerary(); as it) {
+          <!-- Bandeau badges -->
+          <header class="itinerary-panel__badges">
+            @for (tag of it.tags; track tag) {
+              <span class="badge badge--success">
+                <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                @switch (tag) {
+                  @case ('fastest') {
+                    Le plus rapide • 0 bouchon
+                  }
+                  @case ('cheapest') {
+                    Le moins cher
+                  }
+                  @case ('most-comfortable') {
+                    Le plus confortable
+                  }
+                }
+              </span>
+            }
+            @if (isDirect()) {
+              <span class="badge badge--info">
+                <i class="bi bi-broadcast" aria-hidden="true"></i>
+                En direct (Trafic fluide)
+              </span>
+            }
+          </header>
+
+          <!-- Titre + trajet -->
+          <h1 class="itinerary-panel__title">{{ title() }}</h1>
+          <p class="itinerary-panel__route">
+            <strong>{{ it.origin.label }}</strong>
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            <strong>{{ it.destination.label }}</strong>
+          </p>
+
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-card__icon"
+                ><i class="bi bi-clock-history" aria-hidden="true"></i
+              ></span>
+              <p class="stat-card__label">Durée</p>
+              <p class="stat-card__value">{{ formatDuration(it.durationMin) }}</p>
+              <p class="stat-card__hint">Arrivée {{ arrivalTime() }}</p>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-card__icon"
+                ><i class="bi bi-signpost-2" aria-hidden="true"></i
+              ></span>
+              <p class="stat-card__label">Distance</p>
+              <p class="stat-card__value">
+                @if (distanceKm() !== null) {
+                  {{ distanceKm() }} km
+                } @else {
+                  <span class="stat-card__placeholder">…</span>
+                }
+              </p>
+              <p class="stat-card__hint">{{ segments() }} segment{{ segments() > 1 ? 's' : '' }}</p>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-card__icon"
+                ><i class="bi bi-cash-coin" aria-hidden="true"></i
+              ></span>
+              <p class="stat-card__label">Coût</p>
+              <p class="stat-card__value stat-card__value--accent">
+                {{ it.costMinFcfa }}–{{ it.costMaxFcfa }} FCFA
+              </p>
+              <p class="stat-card__hint">{{ it.transfers }} corresp.</p>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-card__icon"><i class="bi bi-shuffle" aria-hidden="true"></i></span>
+              <p class="stat-card__label">Correspondances</p>
+              <p class="stat-card__value">{{ it.transfers }}</p>
+              <p class="stat-card__hint">
+                @if (transferMin() > 0) {
+                  Transfert ~{{ transferMin() }} min
+                } @else {
+                  Aucun transfert
+                }
+              </p>
+            </div>
+          </div>
+
+          <!-- Actions : WhatsApp / Copier / Favori -->
+          <div class="action-row">
+            <button type="button" class="action-btn action-btn--whatsapp" (click)="shareWhatsApp()">
+              <i class="bi bi-whatsapp" aria-hidden="true"></i>
+              WhatsApp
+            </button>
+            <button type="button" class="action-btn" (click)="copyLink()">
+              <i
+                class="bi"
+                [ngClass]="copied() ? 'bi-check-lg' : 'bi-link-45deg'"
+                aria-hidden="true"
+              ></i>
+              {{ copied() ? 'Lien copié' : 'Copier' }}
+            </button>
+            <button
+              type="button"
+              class="action-btn"
+              [class.action-btn--active]="isFavorite()"
+              (click)="toggleFavorite()"
+            >
+              <i
+                class="bi"
+                [ngClass]="isFavorite() ? 'bi-bookmark-fill' : 'bi-bookmark'"
+                aria-hidden="true"
+              ></i>
+              {{ isFavorite() ? 'Favori' : 'Ajouter aux favoris' }}
+            </button>
+          </div>
+
+          <!-- Badges qualité -->
+          <div class="quality-row">
+            <span class="quality-badge">
+              <i class="bi bi-tree-fill" aria-hidden="true"></i>
+              <span>
+                <strong>CO₂ Réduit</strong>
+                <small>−{{ co2Saving() }}% émis</small>
+              </span>
+            </span>
+            <span class="quality-badge">
+              <i class="bi bi-person-arms-up" aria-hidden="true"></i>
+              <span>
+                <strong>Confort {{ comfortLabel() }}</strong>
+                <small>Mode {{ modeLabelShort(it.steps[0]?.mode) }}</small>
+              </span>
+            </span>
+            <span class="quality-badge">
+              <i class="bi bi-shield-check" aria-hidden="true"></i>
+              <span>
+                <strong>Fiabilité {{ reliability() }}%</strong>
+                <small>Signalé par la communauté</small>
+              </span>
+            </span>
+          </div>
+
+          <!-- Alertes -->
+          @if (tripAlerts().length > 0) {
+            <div class="alert-banner" role="alert">
+              <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+              <div>
+                <p class="alert-banner__title">
+                  {{ tripAlerts()[0].title }}
+                </p>
+                <p class="alert-banner__desc">{{ tripAlerts()[0].description }}</p>
+                @if (alertDelay() > 0) {
+                  <span class="alert-banner__pill">+{{ alertDelay() }} min en route standard</span>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Feuille de route -->
+          <section class="roadmap">
+            <header class="roadmap__head">
+              <h2>Feuille de route pas à pas</h2>
+              <span class="roadmap__count">
+                {{ segments() }} étape{{ segments() > 1 ? 's' : '' }}
+              </span>
+            </header>
+
+            <ol class="roadmap__steps">
+              @for (step of steps(); track step.index) {
+                <li
+                  class="roadmap-step"
+                  [class.roadmap-step--done]="step.status === 'done'"
+                  [class.roadmap-step--current]="step.status === 'current'"
+                >
+                  <div class="roadmap-step__marker" [style.--mode-color]="step.color">
+                    @if (step.status === 'done') {
+                      <i class="bi bi-check-lg" aria-hidden="true"></i>
+                    } @else {
+                      <span>{{ step.index + 1 }}</span>
+                    }
+                  </div>
+
+                  <div class="roadmap-step__body">
+                    <header class="roadmap-step__head">
+                      <h3>{{ step.instruction }}</h3>
+                      <span class="roadmap-step__when">
+                        {{ step.startTime }} · {{ step.durationMin }} min
+                      </span>
+                    </header>
+
+                    <p class="roadmap-step__desc">
+                      {{ modeLongLabel(step.mode) }}
+                    </p>
+
+                    <div class="roadmap-step__meta">
+                      <span class="roadmap-step__chip" [style.--mode-color]="step.color">
+                        <i class="bi" [ngClass]="step.icon" aria-hidden="true"></i>
+                        {{ step.modeLabel }}
+                      </span>
+                      <span class="roadmap-step__cost">
+                        {{ step.costFcfa === 0 ? 'Gratuit' : step.costFcfa + ' FCFA' }}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              }
+            </ol>
+          </section>
+
+          <!-- Barre de contrôle -->
+          <footer class="control-bar">
+            @if (!started()) {
+              <button type="button" class="btn btn-primary btn-lg" (click)="startGuidance()">
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+                Démarrer le guidage
+              </button>
+            } @else if (!finished()) {
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="previousStep()"
+                [disabled]="currentStepIndex() === 0"
+              >
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                Précédent
+              </button>
+              <button type="button" class="btn btn-primary" (click)="nextStep()">
+                @if (currentStepIndex() === steps().length - 1) {
+                  <i class="bi bi-flag-fill" aria-hidden="true"></i>
+                  Terminer
+                } @else {
+                  Étape suivante
+                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                }
+              </button>
+            } @else {
+              <div class="control-bar__done">
+                <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                <p>Trajet terminé. Bien arrivé à Babi !</p>
+                <div class="control-bar__done-actions">
+                  <button type="button" class="btn btn-outline-secondary" (click)="restart()">
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                    Refaire
+                  </button>
+                  <a class="btn btn-primary" routerLink="/">
+                    <i class="bi bi-house" aria-hidden="true"></i>
+                    Retour à l'accueil
+                  </a>
+                </div>
+              </div>
+            }
+          </footer>
+
+          <!-- Budget -->
+          @if (monthlyBudget(); as budget) {
+            <aside class="budget-card">
+              <header class="budget-card__head">
+                <i class="bi bi-wallet2" aria-hidden="true"></i>
+                <h3>Estimation mensuelle</h3>
+              </header>
+
+              <div class="budget-card__row">
+                <span>Aller-retour quotidien</span>
+                <strong>{{ budget.daily }} FCFA</strong>
+              </div>
+              <div class="budget-card__row budget-card__row--highlight">
+                <span>Sur 22 jours ouvrés</span>
+                <strong>{{ budget.monthly }} FCFA</strong>
+              </div>
+
+              @if (budget.alternative; as alt) {
+                <p class="budget-card__hint">
+                  <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                  <span>
+                    Avec <strong>{{ alt.label }}</strong> ({{ alt.perTrip }} FCFA le trajet), tu
+                    économiserais <strong>{{ alt.saving }} FCFA/mois</strong>.
+                  </span>
+                </p>
+              } @else {
+                <p class="budget-card__hint budget-card__hint--success">
+                  <i class="bi bi-check-circle" aria-hidden="true"></i>
+                  <span>C'est déjà l'option la plus économique pour ce trajet.</span>
+                </p>
+              }
+            </aside>
+          }
+        } @else {
+          <!-- Skeleton chargement -->
+          <div class="itinerary-panel__loading" role="status">
+            <div class="spinner-border text-primary" aria-hidden="true"></div>
+            <p>Chargement de l'itinéraire…</p>
+          </div>
+        }
+      </article>
+
+      <!-- ==========================================================
+           COLONNE DROITE : carte
+           ========================================================== -->
+      <aside class="map-panel">
+        <!-- Légende flottante -->
+        <div class="map-legend">
+          <span class="map-legend__item">
+            <span class="map-legend__swatch" style="background: #006c47"></span>
+            Tracé en direct
+          </span>
+          <span class="map-legend__sep">·</span>
+          <span class="map-legend__item">
+            <span class="map-legend__swatch" style="background: #a73a00"></span>
+            STL Lagunaire
+          </span>
+          <span class="map-legend__sep">·</span>
+          <span class="map-legend__item">
+            <span class="map-legend__swatch" style="background: #d97706"></span>
+            Woro-woro
+          </span>
+          <span class="map-legend__sep">·</span>
+          <span class="map-legend__item">
+            <span class="map-legend__swatch" style="background: #ba1a1a"></span>
+            Pont de Gaulle : Saturé
+          </span>
+          <span class="map-legend__sep">·</span>
+          <span class="map-legend__item">
+            <span class="map-legend__swatch" style="background: #006c47"></span>
+            Pont HKB : Fluide
+          </span>
+        </div>
+
+        <!-- Host Leaflet -->
+        <div #mapHost class="map"></div>
+
+        <!-- Overlay quand pas d'itinéraire -->
+        @if (!itinerary()) {
+          <div class="map-overlay">
+            <i class="bi bi-map" aria-hidden="true"></i>
+            <p>Chargement de l'aperçu…</p>
+          </div>
+        }
+
+        <!-- Carte d'étape en cours (en bas) -->
+        @if (currentStep(); as step) {
+          <div class="map-step-card">
+            <span class="map-step-card__eyebrow">
+              @if (!started()) {
+                Étape 1 · {{ step.modeLabel }}
+              } @else if (finished()) {
+                Arrivée
+              } @else {
+                Étape {{ step.index + 1 }} · {{ step.modeLabel }}
+              }
+            </span>
+            <h4 class="map-step-card__title">{{ step.instruction }}</h4>
+            <p class="map-step-card__desc">
+              {{ modeLongLabel(step.mode) }} — {{ step.durationMin }} min
+              @if (step.costFcfa > 0) {
+                · {{ step.costFcfa }} FCFA
+              }
+            </p>
+            <div class="map-step-card__footer">
+              <span class="map-step-card__when">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                {{ step.startTime }} → {{ step.endTime }}
+              </span>
+              <button
+                type="button"
+                class="map-step-card__link"
+                (click)="started() ? previousStep() : startGuidance()"
+              >
+                @if (!started()) {
+                  Démarrer
+                } @else {
+                  Revoir
+                }
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        }
+      </aside>
+    </div>
+  }
+</section>

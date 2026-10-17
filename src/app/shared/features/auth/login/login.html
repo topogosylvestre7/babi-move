@@ -1,0 +1,140 @@
+<div class="auth-page">
+  <div class="auth-container">
+    <!-- Panneau gauche : présentation Babi Move -->
+    <aside class="auth-branding" aria-hidden="false">
+      <div class="auth-branding__content">
+        <div class="auth-branding__logo" aria-hidden="true">
+          <i class="bi bi-signpost-split-fill"></i>
+        </div>
+        <h1 class="auth-branding__title">Babi Move</h1>
+        <p class="auth-branding__subtitle">
+          Compare les trajets dans le Grand Abidjan : gbaka, woro-woro, SOTRA, bateau-bus et VTC, en
+          FCFA et en minutes.
+        </p>
+
+        <ul class="auth-branding__features">
+          <li class="feature">
+            <i class="bi bi-cash-coin" aria-hidden="true"></i>
+            <span>Estimation du coût en FCFA</span>
+          </li>
+          <li class="feature">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <span>Durées selon l'heure de pointe</span>
+          </li>
+          <li class="feature">
+            <i class="bi bi-bell" aria-hidden="true"></i>
+            <span>Alertes circulation en direct</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="auth-branding__decoration" aria-hidden="true">
+        <span class="circle circle--1"></span>
+        <span class="circle circle--2"></span>
+        <span class="circle circle--3"></span>
+      </div>
+    </aside>
+
+    <!-- Panneau droit : formulaire -->
+    <section class="auth-form-wrapper">
+      <div class="auth-form">
+        <header class="auth-form__header">
+          <h2 class="auth-form__title">Connexion</h2>
+          <p class="auth-form__subtitle">Entre tes identifiants pour continuer</p>
+        </header>
+
+        @if (error()) {
+          <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            <span class="flex-grow-1">{{ error() }}</span>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Fermer"
+              (click)="error.set('')"
+            ></button>
+          </div>
+        }
+
+        <form class="auth-form__fields" (ngSubmit)="login()" novalidate>
+          <div class="mb-3">
+            <label for="email" class="form-label">Adresse email</label>
+            <div class="input-group">
+              <span class="input-group-text" aria-hidden="true">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                placeholder="nom@exemple.com"
+                autocomplete="email"
+                required
+                [(ngModel)]="email"
+                name="email"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="password" class="form-label mb-0">Mot de passe</label>
+              <a routerLink="/mot-de-passe-oublie" class="auth-form__link">
+                Mot de passe oublié ?
+              </a>
+            </div>
+            <div class="input-group mt-2">
+              <span class="input-group-text" aria-hidden="true">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+                [(ngModel)]="password"
+                name="password"
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                [attr.aria-label]="
+                  showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+                "
+                (click)="togglePassword()"
+              >
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              <span>Connexion en cours…</span>
+            } @else {
+              <span>Se connecter</span>
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            }
+          </button>
+        </form>
+
+        <p class="auth-form__footer">
+          Pas encore de compte ?
+          <a routerLink="/inscription">Créer un compte</a>
+        </p>
+
+        <p class="auth-form__notice" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          Démo sans serveur : n'utilise pas un vrai mot de passe.
+        </p>
+      </div>
+    </section>
+  </div>
+</div>

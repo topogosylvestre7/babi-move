@@ -1,0 +1,123 @@
+:root {
+  // Marque
+  --em-primary-brand: #00875a;
+  --em-secondary-brand: #e05a1b;
+  --em-tertiary-brand: #127475;
+  --em-neutral-brand: #1e2429;
+
+  // Rampes
+  --em-primary-0: #000000;
+  --em-primary-10: #002113;
+  --em-primary-20: #003823;
+  --em-primary-30: #005235;
+  --em-primary-40: #006c47;
+  --em-primary-50: #04885b;
+  --em-primary-60: #34a373;
+  --em-primary-70: #54be8c;
+  --em-primary-80: #71dba6;
+  --em-primary-90: #8df7c1;
+  --em-primary-95: #bfffda;
+  --em-primary-100: #ffffff;
+
+  --em-secondary-0: #000000;
+  --em-secondary-10: #370e00;
+  --em-secondary-20: #5a1c00;
+  --em-secondary-30: #7f2b00;
+  --em-secondary-40: #a73a00;
+  --em-secondary-50: #ce4d0b;
+  --em-secondary-60: #f06627;
+  --em-secondary-70: #ff8c5d;
+  --em-secondary-80: #ffb599;
+  --em-secondary-90: #ffdbce;
+  --em-secondary-95: #ffede7;
+  --em-secondary-100: #ffffff;
+
+  --em-tertiary-0: #000000;
+  --em-tertiary-10: #002020;
+  --em-tertiary-20: #003737;
+  --em-tertiary-30: #004f50;
+  --em-tertiary-40: #00696a;
+  --em-tertiary-50: #2a8384;
+  --em-tertiary-60: #499d9e;
+  --em-tertiary-70: #66b8b9;
+  --em-tertiary-80: #82d4d5;
+  --em-tertiary-90: #9ef1f1;
+  --em-tertiary-95: #afffff;
+  --em-tertiary-100: #ffffff;
+
+  --em-neutral-0: #000000;
+  --em-neutral-10: #161c21;
+  --em-neutral-20: #2b3136;
+  --em-neutral-30: #41474d;
+  --em-neutral-40: #595f65;
+  --em-neutral-50: #72787e;
+  --em-neutral-60: #8b9198;
+  --em-neutral-70: #a6acb2;
+  --em-neutral-80: #c1c7ce;
+  --em-neutral-90: #dde3ea;
+  --em-neutral-95: #ecf1f8;
+  --em-neutral-100: #ffffff;
+
+  // Rôles : couleurs d'action
+  // Le ton 40 sert aux boutons et aux liens (texte blanc lisible dessus),
+  // la couleur de marque aux grands aplats et aux illustrations.
+  --em-primary: var(--em-primary-40);
+  --em-primary-hover: var(--em-primary-30);
+  --em-primary-active: var(--em-primary-20);
+  --em-on-primary: #ffffff;
+
+  --em-secondary: var(--em-secondary-40);
+  --em-secondary-hover: var(--em-secondary-30);
+  --em-secondary-active: var(--em-secondary-20);
+
+  --em-tertiary: var(--em-tertiary-40);
+  --em-tertiary-hover: var(--em-tertiary-30);
+  --em-tertiary-active: var(--em-tertiary-20);
+
+  --em-error: #ba1a1a;
+  --em-error-hover: #93000a;
+  --em-error-active: #690005;
+  --em-error-container: #ffdad6;
+
+  // Même valeurs en « r, g, b » pour les transparences : rgba(var(--em-primary-rgb), 0.15)
+  --em-primary-rgb: 0, 108, 71;
+  --em-primary-hover-rgb: 0, 82, 53;
+  --em-secondary-rgb: 167, 58, 0;
+  --em-tertiary-rgb: 0, 105, 106;
+  --em-error-rgb: 186, 26, 26;
+  --em-neutral-dark-rgb: 43, 49, 54;
+  --em-surface-rgb: 233, 238, 245;
+  --em-on-surface-rgb: 22, 28, 33;
+  --em-on-surface-variant-rgb: 62, 73, 66;
+
+  // Surfaces
+  --em-surface-lowest: #ffffff; // cartes et champs posés sur la page
+  --em-surface: #e9eef5; // fond de page, cartes de la planche
+  --em-surface-container: #e3e9f0; // champs, barre de navigation, pistes, bouton « Secondary »
+  --em-surface-dim: #d5dbe1; // fond du panneau de la planche
+  --em-surface-inverse: var(--em-neutral-20); // bouton « Inverted »
+  --em-background: var(--em-surface);
+
+  // Texte
+  --em-on-surface: var(--em-neutral-10); // titres
+  --em-on-surface-variant: #3e4942; // texte courant
+  --em-muted: var(--em-neutral-40); // texte secondaire, indications
+  --em-outline: var(--em-neutral-50);
+  --em-outline-variant: var(--em-neutral-80); // bordures de champs et de boutons
+  --em-divider: var(--em-neutral-90); // filets et bordures discrètes
+
+  // Priorité des alertes (proposition)
+  --em-alert-critical: var(--em-error);
+  --em-alert-critical-bg: var(--em-error-container);
+  --em-alert-high: var(--em-secondary-40);
+  --em-alert-high-bg: var(--em-secondary-90);
+  --em-alert-medium: var(--em-tertiary-40);
+  --em-alert-medium-bg: var(--em-tertiary-90);
+  --em-alert-info: var(--em-neutral-40);
+  --em-alert-info-bg: var(--em-neutral-90);
+
+  // Typographie
+  --em-font-headline: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --em-font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --em-font-label: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}

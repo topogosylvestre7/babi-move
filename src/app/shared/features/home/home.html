@@ -1,0 +1,790 @@
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+<section class="hero">
+  @if (!loaded()) {
+    <div class="hero__loading" role="status">
+      <div class="spinner-border text-primary" aria-hidden="true"></div>
+      <p>Chargement des données d'Abidjan…</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="alert alert-danger hero__error" role="alert">
+      <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+      Impossible de charger les données : {{ loadError() }}
+    </div>
+  }
+
+  <div class="hero__inner">
+    <div class="hero__lead">
+      <span class="hero__badge">
+        <span class="hero__badge-dot" aria-hidden="true"></span>
+        Plateforme d'aide à la mobilité urbaine • Grand Abidjan
+      </span>
+
+      <h1 class="hero__title">
+        Circulez enfin <span class="hero__title-accent">sereinement</span> à Abidjan : la lagune et
+        la route synchronisées en temps réel.
+      </h1>
+
+      <p class="hero__subtitle">
+        Combinez bateaux-bus STL, SOTRA, gbakas et woro-woros. Évitez les bouchons légendaires des
+        ponts HKB et De Gaulle, maîtrisez vos tarifs en FCFA et gagnez jusqu'à
+        <strong>45 minutes par jour</strong>.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn-primary hero__cta" routerLink="/resultats">
+          Simuler mon trajet quotidien
+          <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </a>
+        <a class="btn btn-outline-secondary hero__cta" routerLink="/alertes">
+          <span class="hero__live-dot" aria-hidden="true"></span>
+          Voir le trafic en direct
+          <span class="hero__pill">{{ topAlerts().length || 3 }} alertes</span>
+        </a>
+      </div>
+
+      <div class="hero__proof">
+        <div class="hero__avatars" aria-hidden="true">
+          <span class="hero__avatar hero__avatar--1">S</span>
+          <span class="hero__avatar hero__avatar--2">G</span>
+          <span class="hero__avatar hero__avatar--3">STL</span>
+        </div>
+        <p>Déjà utilisé par plus de <strong>62 000 usagers</strong> quotidiens à Abidjan.</p>
+      </div>
+    </div>
+
+    <!-- Simulateur -->
+    <aside class="simulator" aria-label="Simulateur de trajet">
+      <header class="simulator__header">
+        <div>
+          <p class="simulator__eyebrow">
+            <i class="bi bi-signpost-split" aria-hidden="true"></i>
+            Simulateur Multimodal Instantané
+          </p>
+        </div>
+        <span class="simulator__time-pill">17:15 Heure de pointe</span>
+      </header>
+
+      <div class="simulator__fields">
+        <div class="simulator__field">
+          <span class="simulator__dot simulator__dot--start" aria-hidden="true"></span>
+          <label class="simulator__label" for="departure">Départ</label>
+          <input
+            id="departure"
+            type="text"
+            class="simulator__input"
+            placeholder="Plateau • Immeuble CCIA"
+            [ngModel]="departureText()"
+            (ngModelChange)="onDepartureInput($event)"
+            (blur)="onBlur()"
+            name="departure"
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            class="simulator__pin"
+            aria-label="Utiliser ma position"
+            (click)="useMyPosition()"
+          >
+            <i
+              class="bi"
+              [ngClass]="searchingLocation() ? 'bi-hourglass-split' : 'bi-crosshair'"
+            ></i>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="simulator__swap"
+          aria-label="Inverser départ et destination"
+          (click)="swap()"
+        >
+          <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
+        </button>
+
+        <div class="simulator__field">
+          <span class="simulator__dot simulator__dot--end" aria-hidden="true"></span>
+          <label class="simulator__label" for="destination">Destination</label>
+          <input
+            id="destination"
+            type="text"
+            class="simulator__input"
+            placeholder="Cocody • Angré 8ème Tranche"
+            [ngModel]="destinationText()"
+            (ngModelChange)="onDestinationInput($event)"
+            (blur)="onBlur()"
+            name="destination"
+            autocomplete="off"
+          />
+          <span class="simulator__pin" aria-hidden="true">
+            <i class="bi bi-geo-alt"></i>
+          </span>
+        </div>
+
+        @if (suggestions().length > 0 && activeField()) {
+          <ul class="simulator__suggestions" role="listbox" (mousedown)="$event.preventDefault()">
+            @for (s of suggestions(); track s.id) {
+              <li>
+                <button type="button" (click)="selectSuggestion(s)" class="simulator__suggestion">
+                  <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                  <span class="simulator__suggestion-label">{{ s.label }}</span>
+                  <span class="simulator__suggestion-detail">{{ s.detail }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (locationError()) {
+          <p class="simulator__error" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            {{ locationError() }}
+          </p>
+        }
+      </div>
+
+      <div class="simulator__chips">
+        <span class="simulator__chip simulator__chip--tertiary">
+          <i class="bi bi-water" aria-hidden="true"></i>
+          Navette STL
+        </span>
+        <span class="simulator__chip simulator__chip--secondary">
+          <i class="bi bi-car-taxi-front" aria-hidden="true"></i>
+          Woro-woro
+        </span>
+        <span class="simulator__chip">
+          <i class="bi bi-person-walking" aria-hidden="true"></i>
+          4 min marche
+        </span>
+      </div>
+
+      <!-- Bouton Calculer (utile si la sélection n'a pas rempli le Waypoint) -->
+      <button
+        type="button"
+        class="btn btn-primary simulator__go"
+        (click)="forceEstimate()"
+        [disabled]="!departureText().trim() || !destinationText().trim()"
+      >
+        <i class="bi bi-search" aria-hidden="true"></i>
+        Calculer l'itinéraire
+      </button>
+
+      <!-- Estimation -->
+      @if (simulatorEstimate(); as est) {
+        <article class="simulator__result simulator__result--filled">
+          <span class="simulator__result-tag">Itinéraire recommandé</span>
+
+          <div class="simulator__result-top">
+            <span class="simulator__result-duration"> {{ est.fastestDuration }} min </span>
+            <span class="simulator__result-via"> {{ est.distanceKm }} km </span>
+            <span class="simulator__result-price">
+              {{ est.cheapestCost }} FCFA
+              <small>Estimation</small>
+            </span>
+          </div>
+
+          @if (est.recommended; as rec) {
+            <div class="simulator__result-steps">
+              <div class="simulator__step">
+                <span
+                  class="simulator__step-icon"
+                  [style.background]="
+                    'color-mix(in srgb, ' + modesById()[rec.mode].color + ' 14%, transparent)'
+                  "
+                  [style.color]="modesById()[rec.mode].color"
+                >
+                  <i class="bi" [ngClass]="modesById()[rec.mode].icon" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <p class="simulator__step-title">
+                    {{ modesById()[rec.mode].label }} — {{ rec.durationMin }} min
+                  </p>
+                  <p class="simulator__step-detail">
+                    <span class="simulator__step-chip">
+                      {{ rec.costMinFcfa }}–{{ rec.costMaxFcfa }} FCFA
+                    </span>
+                    @if (rec.transfers > 0) {
+                      <span class="simulator__step-chip simulator__step-chip--neutral">
+                        {{ rec.transfers }} correspondance(s)
+                      </span>
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (est.cheapest; as cheap) {
+            <div class="simulator__result-footer">
+              <span>
+                <i class="bi bi-piggy-bank" aria-hidden="true"></i>
+                Le moins cher :
+                <strong>
+                  {{ modesById()[cheap.mode].label }} — {{ cheap.costMinFcfa }} FCFA
+                </strong>
+              </span>
+            </div>
+          }
+
+          <button
+            class="btn btn-primary simulator__go"
+            (click)="search()"
+            [disabled]="!departure() || !destination()"
+          >
+            <i class="bi bi-navigation" aria-hidden="true"></i>
+            Voir tous les itinéraires
+          </button>
+        </article>
+      } @else if (estimateError()) {
+        <article class="simulator__result simulator__result--empty">
+          <p class="simulator__result-empty-text">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            {{ estimateError() }}
+          </p>
+        </article>
+      } @else {
+        <article class="simulator__result simulator__result--empty">
+          <p class="simulator__result-empty-text">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            Choisis un départ et une destination pour voir une estimation.
+          </p>
+        </article>
+      }
+    </aside>
+  </div>
+
+  <!-- Raccourcis communes populaires -->
+  <div class="hero__shortcuts">
+    <span class="hero__shortcuts-label">Raccourcis :</span>
+    @for (c of popularCommunes(); track c.id) {
+      <button type="button" class="hero__shortcut" (click)="usePopularCommune(c)">
+        {{ c.name }}
+      </button>
+    }
+  </div>
+
+  <!-- Chiffres clés -->
+  <div class="hero__stats">
+    @for (stat of trustNumbers(); track stat.value) {
+      <div class="stat">
+        <p class="stat__value">{{ stat.value }}</p>
+        <p class="stat__label">{{ stat.label }}</p>
+        <p class="stat__detail">{{ stat.detail }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ================================================================
+     PILIERS
+     ================================================================ -->
+<section class="section section--pillars">
+  <header class="section__header">
+    <span class="section__eyebrow section__eyebrow--primary"> L'intelligence métropolitaine </span>
+    <h2 class="section__title">Pourquoi Babi Move révolutionne vos journées ?</h2>
+    <p class="section__subtitle">
+      Abidjan est une perle posée sur l'eau, mais les bouchons routiers coûtent des millions
+      d'heures chaque semaine. Nous combinons les forces méconnues de notre ville.
+    </p>
+  </header>
+
+  <div class="pillars">
+    @for (p of pillars; track p.title) {
+      <article class="pillar" [class]="'pillar--' + p.tone">
+        <span class="pillar__icon" aria-hidden="true">
+          <i class="bi" [ngClass]="p.icon"></i>
+        </span>
+        <p class="pillar__tag">{{ p.tag }}</p>
+        <h3 class="pillar__title">{{ p.title }}</h3>
+        <p class="pillar__description">{{ p.description }}</p>
+        <p class="pillar__footer">
+          {{ p.footer }}
+          <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </p>
+      </article>
+    }
+  </div>
+</section>
+
+<!-- ================================================================
+     FONCTIONNALITÉS (ONGLETS) + APERÇU DYNAMIQUE
+     ================================================================ -->
+<section class="section section--features">
+  <header class="section__header section__header--left">
+    <span class="section__eyebrow section__eyebrow--primary"> Fonctionnalités avancées </span>
+    <h2 class="section__title">L'arsenal complet pour dompter la circulation</h2>
+    <p class="section__subtitle">
+      Chaque détail a été calibré pour résister aux spécificités du terrain ivoirien : modes formels
+      et informels intégrés.
+    </p>
+  </header>
+
+  <div class="features-layout">
+    <!-- Onglets -->
+    <ul class="features-list" role="tablist">
+      @for (f of features; track f.title; let i = $index) {
+        <li>
+          <button
+            type="button"
+            role="tab"
+            class="feature"
+            [class.is-active]="isActiveFeature(i)"
+            [attr.aria-selected]="isActiveFeature(i)"
+            (click)="setActiveFeature(i)"
+          >
+            <span class="feature__icon" aria-hidden="true">
+              <i class="bi" [ngClass]="f.icon"></i>
+            </span>
+            <div>
+              <h3 class="feature__title">{{ f.title }}</h3>
+              <p class="feature__description">{{ f.description }}</p>
+            </div>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <!-- Contenu de l'onglet actif -->
+    <div class="preview-host">
+      <!-- Onglet 0 : Calculateur Multimodal -->
+      @if (isActiveFeature(0)) {
+        @if (previewAxis(); as axis) {
+          <aside class="preview" aria-label="Aperçu itinéraire">
+            <header class="preview__header">
+              <div>
+                <p class="preview__eyebrow">Aperçu direct :</p>
+                <h3 class="preview__title">{{ axis.from }} → {{ axis.to }}</h3>
+              </div>
+              <span class="preview__time">{{ axis.distanceKm }} km</span>
+            </header>
+
+            <ol class="preview__steps">
+              @for (offer of axis.modes; track offer.mode; let i = $index) {
+                <li class="preview__step">
+                  <span class="preview__step-num">{{ i + 1 }}</span>
+                  <div class="preview__step-body">
+                    <span
+                      class="preview__step-chip"
+                      [style.--chip-color]="modesById()[offer.mode]?.color"
+                    >
+                      <i
+                        class="bi"
+                        [ngClass]="modesById()[offer.mode]?.icon"
+                        aria-hidden="true"
+                      ></i>
+                      {{ modesById()[offer.mode]?.label }}
+                    </span>
+                    <p class="preview__step-title">{{ axis.from }} → {{ axis.to }}</p>
+                    <p class="preview__step-detail">
+                      {{
+                        offer.transfers === 0 ? 'Direct' : offer.transfers + ' correspondance(s)'
+                      }}
+                      • {{ modesById()[offer.mode]?.comfort }}/5 confort
+                    </p>
+                  </div>
+                  <div class="preview__step-meta">
+                    <span class="preview__step-price">
+                      {{ offer.costMinFcfa }}–{{ offer.costMaxFcfa }} FCFA
+                    </span>
+                    <span class="preview__step-duration"> {{ offer.durationMin }} min </span>
+                  </div>
+                </li>
+              }
+            </ol>
+
+            <footer class="preview__footer">
+              <div class="preview__total">
+                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                <div>
+                  <p class="preview__total-time">Le plus rapide : {{ axis.fastestDuration }} min</p>
+                  <p class="preview__total-detail">
+                    À partir de {{ axis.cheapestCost }} FCFA — jusqu'à {{ axis.maxCost }} FCFA
+                  </p>
+                </div>
+              </div>
+              <div class="preview__total-right">
+                <a class="btn btn-primary" routerLink="/resultats"> Voir tous les itinéraires </a>
+              </div>
+            </footer>
+          </aside>
+        }
+      }
+
+      <!-- Onglet 1 : Observatoire Trafic Direct -->
+      @if (isActiveFeature(1)) {
+        <aside class="preview" aria-label="Alertes trafic en direct">
+          <header class="preview__header">
+            <div>
+              <p class="preview__eyebrow">Flux direct :</p>
+              <h3 class="preview__title">Top 3 des perturbations</h3>
+            </div>
+            <span class="preview__time">Temps réel</span>
+          </header>
+
+          <ul class="preview-alerts">
+            @for (a of topAlerts(); track a.id) {
+              <li class="preview-alert" [class]="'preview-alert--' + alertTone(a.priority)">
+                <span class="preview-alert__dot" aria-hidden="true"></span>
+                <div class="preview-alert__body">
+                  <p class="preview-alert__tag">{{ alertTagLabel(a.priority) }}</p>
+                  <p class="preview-alert__title">{{ a.title }}</p>
+                  <p class="preview-alert__desc">{{ a.description }}</p>
+                </div>
+                <span class="preview-alert__time">
+                  {{ a.updatedAt | date: 'HH:mm' }}
+                </span>
+              </li>
+            }
+          </ul>
+
+          <footer class="preview__footer">
+            <div class="preview__total">
+              <i class="bi bi-broadcast" aria-hidden="true"></i>
+              <div>
+                <p class="preview__total-time">Observatoire en direct</p>
+                <p class="preview__total-detail">Mis à jour automatiquement toutes les 2 minutes</p>
+              </div>
+            </div>
+            <div class="preview__total-right">
+              <a class="btn btn-primary" routerLink="/alertes"> Toutes les alertes </a>
+            </div>
+          </footer>
+        </aside>
+      }
+
+      <!-- Onglet 2 : Mon Espace & Budget -->
+      @if (isActiveFeature(2)) {
+        <aside class="preview" aria-label="Budget mensuel">
+          <header class="preview__header">
+            <div>
+              <p class="preview__eyebrow">Estimation :</p>
+              <h3 class="preview__title">Ton budget transport mensuel</h3>
+            </div>
+            <span class="preview__time">22 jours ouvrés</span>
+          </header>
+
+          <div class="budget-card">
+            <div class="budget-card__row">
+              <span class="budget-card__label">Trajet quotidien estimé</span>
+              <span class="budget-card__value">750 FCFA</span>
+            </div>
+            <div class="budget-card__row">
+              <span class="budget-card__label">Aller-retour par jour</span>
+              <span class="budget-card__value">1 500 FCFA</span>
+            </div>
+            <div class="budget-card__row budget-card__row--highlight">
+              <span class="budget-card__label">Sur 22 jours ouvrés</span>
+              <span class="budget-card__value">33 000 FCFA</span>
+            </div>
+            <p class="budget-card__hint">
+              <i class="bi bi-lightbulb" aria-hidden="true"></i>
+              Alternative Bateau-bus STL + marche : économie estimée de 18 500 FCFA/mois.
+            </p>
+          </div>
+
+          <footer class="preview__footer">
+            <div class="preview__total">
+              <i class="bi bi-wallet2" aria-hidden="true"></i>
+              <div>
+                <p class="preview__total-time">Calculé sur tes trajets réels</p>
+                <p class="preview__total-detail">Connecte-toi pour un calcul personnalisé</p>
+              </div>
+            </div>
+            <div class="preview__total-right">
+              <a class="btn btn-primary" routerLink="/mon-espace"> Mon espace </a>
+            </div>
+          </footer>
+        </aside>
+      }
+
+      <!-- Onglet 3 : Signalement Citoyen -->
+      @if (isActiveFeature(3)) {
+        <aside class="preview" aria-label="Signalement citoyen">
+          <header class="preview__header">
+            <div>
+              <p class="preview__eyebrow">Contribution :</p>
+              <h3 class="preview__title">Aide la communauté Babi</h3>
+            </div>
+            <span class="preview__time">2 min</span>
+          </header>
+
+          <div class="contribute-card">
+            <span class="contribute-card__icon" aria-hidden="true">
+              <i class="bi bi-megaphone-fill"></i>
+            </span>
+            <p class="contribute-card__text">
+              Tu vois un accident, un gbaka en panne, un contrôle ou un tarif inhabituel ?
+              Signale-le en quelques secondes. Les autres Babi verront ton alerte en direct et
+              pourront éviter la zone.
+            </p>
+            <ul class="contribute-card__list">
+              <li>
+                <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                Type de signalement : embouteillage, accident, prix réel, arrêt
+              </li>
+              <li>
+                <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                Position sur la carte + photo en pièce jointe
+              </li>
+              <li>
+                <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                Publication en moins de 3 minutes
+              </li>
+            </ul>
+          </div>
+
+          <footer class="preview__footer">
+            <div class="preview__total">
+              <i class="bi bi-people-fill" aria-hidden="true"></i>
+              <div>
+                <p class="preview__total-time">62 000 contributeurs actifs</p>
+                <p class="preview__total-detail">Chaque signalement aide toute la communauté</p>
+              </div>
+            </div>
+            <div class="preview__total-right">
+              <a class="btn btn-primary" routerLink="/contribuer"> Faire un signalement </a>
+            </div>
+          </footer>
+        </aside>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     COMPARAISON SANS / AVEC
+     ================================================================ -->
+<section class="section section--compare">
+  <header class="section__header">
+    <span class="section__eyebrow section__eyebrow--secondary">
+      La transformation du quotidien
+    </span>
+    <h2 class="section__title">Le trajet typique Yopougon – Cocody : comparaison frontale</h2>
+    <p class="section__subtitle">
+      Mesurez la différence concrète sur votre santé, votre stress et votre budget hebdomadaire.
+    </p>
+  </header>
+
+  <div class="compare">
+    <article class="compare-card compare-card--without">
+      <span class="compare-card__tag">Sans Babi Move (à l'aveugle)</span>
+      <header class="compare-card__header">
+        <span class="compare-card__icon" aria-hidden="true">
+          <i class="bi bi-emoji-frown"></i>
+        </span>
+        <div>
+          <h3 class="compare-card__title">Le parcours du combattant</h3>
+          <p class="compare-card__subtitle">Durée imprévisible : 1h30 à 2h15</p>
+        </div>
+      </header>
+      <ul class="compare-card__list">
+        @for (row of comparisonRows.without; track row.label) {
+          <li>
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+            <div>
+              <strong>{{ row.label }}</strong> — {{ row.detail }}
+            </div>
+          </li>
+        }
+      </ul>
+      <footer class="compare-card__footer">
+        <span>Bilan énergétique : Épuisant</span>
+        <span class="compare-card__badge">Budget aléatoire</span>
+      </footer>
+    </article>
+
+    <article class="compare-card compare-card--with">
+      <span class="compare-card__tag">Avec Babi Move (guidé & multimodal)</span>
+      <header class="compare-card__header">
+        <span class="compare-card__icon" aria-hidden="true">
+          <i class="bi bi-emoji-smile"></i>
+        </span>
+        <div>
+          <h3 class="compare-card__title">Le parcours fluide synchronisé</h3>
+          <p class="compare-card__subtitle">Durée garantie : 38 minutes</p>
+        </div>
+      </header>
+      <ul class="compare-card__list">
+        @for (row of comparisonRows.with; track row.label) {
+          <li>
+            <i class="bi bi-check2" aria-hidden="true"></i>
+            <div>
+              <strong>{{ row.label }}</strong> — {{ row.detail }}
+            </div>
+          </li>
+        }
+      </ul>
+      <footer class="compare-card__footer">
+        <span>Gain : 45 min de temps libre</span>
+        <span class="compare-card__badge">Budget maîtrisé à 100%</span>
+      </footer>
+    </article>
+  </div>
+</section>
+
+<!-- ================================================================
+     ALERTES
+     ================================================================ -->
+<section class="section section--alerts">
+  <header class="section__header section__header--left">
+    <span class="section__eyebrow section__eyebrow--secondary">
+      <span class="section__eyebrow-dot" aria-hidden="true"></span>
+      Flux direct d'Abidjan
+    </span>
+    <div class="section__header-row">
+      <h2 class="section__title">Alertes communautaires en temps réel</h2>
+      <div class="section__header-actions">
+        <span class="section__meta">
+          <i class="bi bi-check-circle" aria-hidden="true"></i>
+          Actualisé à l'instant
+        </span>
+        <a class="btn btn-primary" routerLink="/contribuer">
+          <i class="bi bi-megaphone" aria-hidden="true"></i>
+          Signaler un incident
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="alerts">
+    @for (a of topAlerts(); track a.id) {
+      <article class="alert-card" [class]="'alert-card--' + alertTone(a.priority)">
+        <header class="alert-card__header">
+          <span class="alert-card__tag">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            {{ alertTagLabel(a.priority) }}
+          </span>
+          <span class="alert-card__time">{{ a.updatedAt | date: 'HH:mm' }}</span>
+        </header>
+        <h3 class="alert-card__title">{{ a.title }}</h3>
+        <p class="alert-card__description">{{ a.description }}</p>
+        <footer class="alert-card__footer">
+          @if (a.advice) {
+            <span class="alert-card__advice">Conseil : {{ a.advice }}</span>
+          }
+          <span class="alert-card__confirmations">
+            {{ confirmationCount(a.id) }} confirmations
+          </span>
+        </footer>
+      </article>
+    }
+  </div>
+</section>
+
+<!-- ================================================================
+     TÉMOIGNAGES
+     ================================================================ -->
+<section class="section section--testimonials">
+  <header class="section__header">
+    <span class="section__eyebrow section__eyebrow--primary">La voix des usagers</span>
+    <h2 class="section__title">Ceux qui bougent chaque jour à Abidjan témoignent</h2>
+    <p class="section__subtitle">
+      Du cadre de banque au commerçant de marché, découvrez comment l'application a transformé leur
+      rythme de vie.
+    </p>
+  </header>
+
+  <div class="testimonials">
+    @for (t of testimonials; track t.name) {
+      <article class="testimonial" [class]="'testimonial--' + t.tone">
+        <div class="testimonial__stars" aria-label="5 étoiles sur 5">
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+        </div>
+        <blockquote class="testimonial__quote">{{ t.quote }}</blockquote>
+        <footer class="testimonial__author">
+          <span class="testimonial__avatar" aria-hidden="true">{{ t.initials }}</span>
+          <div>
+            <p class="testimonial__name">{{ t.name }}</p>
+            <p class="testimonial__role">{{ t.role }}</p>
+          </div>
+        </footer>
+      </article>
+    }
+  </div>
+</section>
+
+<!-- ================================================================
+     CTA FINAL + PARTENAIRES
+     ================================================================ -->
+<section class="section section--final">
+  <div class="final__inner">
+    <span class="final__logo" aria-hidden="true">
+      <i class="bi bi-signpost-split-fill"></i>
+    </span>
+    <h2 class="final__title">Prêt à réinventer vos déplacements dans le Grand Abidjan ?</h2>
+    <p class="final__subtitle">
+      Testez gratuitement votre itinéraire favori dès maintenant sans téléchargement lourd ou
+      rejoignez les 62 000 usagers actifs.
+    </p>
+
+    <form class="final__form" (submit)="submitQuickRoute(); $event.preventDefault()">
+      <i class="bi bi-search" aria-hidden="true"></i>
+      <input
+        type="text"
+        placeholder="Ex : Yopougon → Plateau"
+        [ngModel]="quickRoute()"
+        (ngModelChange)="quickRoute.set($event)"
+        name="quickRoute"
+        autocomplete="off"
+        aria-label="Votre trajet, au format Départ → Destination"
+      />
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="quickRouteLoading() || !quickRoute().trim()"
+      >
+        @if (quickRouteLoading()) {
+          Recherche…
+        } @else {
+          Tester l'itinéraire optimal
+        }
+      </button>
+    </form>
+
+    @if (quickRouteError()) {
+      <p class="final__error" role="alert">
+        <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+        {{ quickRouteError() }}
+      </p>
+    }
+
+    <div class="final__examples">
+      <span>Essayer :</span>
+      @for (ex of quickExamples; track ex) {
+        <button type="button" class="final__example" (click)="fillQuickRoute(ex)">
+          {{ ex }}
+        </button>
+      }
+    </div>
+
+    <div class="final__badges">
+      <span class="final__badge">
+        <i class="bi bi-phone" aria-hidden="true"></i>
+        Installer la PWA (Légère 4 Mo)
+      </span>
+      <span class="final__badge">
+        <i class="bi bi-globe" aria-hidden="true"></i>
+        Accès Web Mobile sans Inscription
+      </span>
+    </div>
+  </div>
+
+  <div class="partners">
+    <p class="partners__title">
+      En coordination et interopérabilité avec les acteurs du transport ivoirien
+    </p>
+    <div class="partners__list">
+      @for (p of partners; track p.name) {
+        <span class="partners__item">
+          <i class="bi" [ngClass]="p.icon" aria-hidden="true"></i>
+          {{ p.name }}
+        </span>
+      }
+    </div>
+  </div>
+</section>

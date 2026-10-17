@@ -1,0 +1,84 @@
+<section class="favorites-page">
+  <header class="favorites-header">
+    <div class="favorites-header__inner">
+      <div>
+        <h1 class="favorites-header__title">Mes favoris</h1>
+        <p class="favorites-header__subtitle">
+          Tes trajets enregistrés pour les relancer en un clic.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="favorites-content">
+    @if (!hasFavorites()) {
+      <div class="state state--empty">
+        <i class="bi bi-star" aria-hidden="true"></i>
+        <h2 class="state__title">Aucun trajet favori</h2>
+        <p class="state__text">
+          Ajoute un itinéraire à tes favoris depuis la page des résultats pour le retrouver ici.
+        </p>
+        <a class="btn btn-primary" routerLink="/resultats">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          Chercher un trajet
+        </a>
+      </div>
+    } @else {
+      <ul class="favorites-list">
+        @for (fav of favorites(); track fav.id) {
+          <li class="fav-card" (click)="relaunch(fav)">
+            <!-- Icône du mode -->
+            <div
+              class="fav-card__icon"
+              [style.background]="
+                'color-mix(in srgb, ' + modeColor(fav.bestMode) + ' 12%, transparent)'
+              "
+              [style.color]="modeColor(fav.bestMode)"
+            >
+              <i class="bi" [ngClass]="modeIcon(fav.bestMode)" aria-hidden="true"></i>
+            </div>
+
+            <!-- Détails -->
+            <div class="fav-card__body">
+              <div class="fav-card__route">
+                <strong>{{ fav.origin.label }}</strong>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                <strong>{{ fav.destination.label }}</strong>
+              </div>
+
+              <div class="fav-card__meta">
+                <span class="fav-card__badge">
+                  <i class="bi" [ngClass]="modeIcon(fav.bestMode)" aria-hidden="true"></i>
+                  {{ modeLabel(fav.bestMode) }}
+                </span>
+                <span
+                  ><i class="bi bi-cash-coin" aria-hidden="true"></i> {{ fav.costFcfa }} FCFA</span
+                >
+                <span
+                  ><i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                  {{ fav.durationMin }} min</span
+                >
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="fav-card__actions">
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                (click)="remove(fav, $event)"
+                title="Retirer des favoris"
+              >
+                <i class="bi bi-star-fill" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" title="Relancer">
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                Relancer
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

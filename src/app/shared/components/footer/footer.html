@@ -1,0 +1,80 @@
+<footer class="footer">
+  <div class="footer-main">
+    <!-- Marque -->
+    <div class="footer-brand">
+      <div class="logo-row">
+        <div class="logo" aria-hidden="true">{{ brandLetter }}</div>
+        <span class="brand-name">{{ brandName }}</span>
+      </div>
+      <p>{{ description }}</p>
+      <div class="footer-social">
+        @for (s of socialLinks; track s.label) {
+          <a [href]="s.href" [attr.aria-label]="s.label" rel="noopener">
+            <i class="bi" [ngClass]="s.icon" aria-hidden="true"></i>
+          </a>
+        }
+      </div>
+    </div>
+
+    <!-- Colonnes de liens -->
+    @for (col of columns(); track col.title) {
+      <nav class="footer-col" [attr.aria-label]="col.title">
+        <h4>{{ col.title }}</h4>
+        <ul>
+          @for (link of col.links; track link.label) {
+            <li>
+              @if (link.routerLink) {
+                <a [routerLink]="link.routerLink">
+                  {{ link.label }}
+                  @if (link.badge) {
+                    <span class="new-badge">{{ link.badge }}</span>
+                  }
+                </a>
+              } @else {
+                <a [href]="link.href">
+                  {{ link.label }}
+                  @if (link.badge) {
+                    <span class="new-badge">{{ link.badge }}</span>
+                  }
+                </a>
+              }
+            </li>
+          }
+        </ul>
+      </nav>
+    }
+  </div>
+
+  <!-- Bandeau contribution -->
+  <div class="footer-cta">
+    <div class="cta-text">
+      <h4>Tu connais un trajet, un prix, un arrêt ?</h4>
+      <p>
+        Babi Move vit grâce aux signalements. Partage ce que tu vois pour aider les autres Babi.
+      </p>
+    </div>
+
+    <!-- CTA conditionnel -->
+    @if (isLoggedIn()) {
+      <a routerLink="/contribuer" class="cta-btn">
+        <i class="bi bi-megaphone" aria-hidden="true"></i>
+        Faire un signalement
+      </a>
+    } @else {
+      <a routerLink="/connexion" [queryParams]="{ redirect: '/contribuer' }" class="cta-btn">
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+        Se connecter pour contribuer
+      </a>
+    }
+  </div>
+
+  <!-- Bas de page -->
+  <div class="footer-bottom">
+    <span>© {{ currentYear }} {{ brandName }}. Tous droits réservés.</span>
+    <div class="footer-bottom-links">
+      @for (link of bottomLinks; track link.label) {
+        <a [href]="link.href">{{ link.label }}</a>
+      }
+    </div>
+  </div>
+</footer>

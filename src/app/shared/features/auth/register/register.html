@@ -1,0 +1,261 @@
+<div class="auth-page">
+  <div class="auth-container">
+    <!-- Panneau gauche : présentation Babi Move -->
+    <aside class="auth-branding" aria-hidden="false">
+      <div class="auth-branding__content">
+        <div class="auth-branding__logo" aria-hidden="true">
+          <i class="bi bi-signpost-split-fill"></i>
+        </div>
+        <h1 class="auth-branding__title">Rejoins Babi Move</h1>
+        <p class="auth-branding__subtitle">
+          Crée ton compte en quelques secondes pour retrouver tes trajets, tes favoris et tes
+          alertes personnalisées, sur tous tes appareils.
+        </p>
+
+        <ul class="auth-branding__features">
+          <li class="feature">
+            <i class="bi bi-star-fill" aria-hidden="true"></i>
+            <span>Favoris Maison, Travail, Fac…</span>
+          </li>
+          <li class="feature">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <span>Historique complet de tes trajets</span>
+          </li>
+          <li class="feature">
+            <i class="bi bi-bell-fill" aria-hidden="true"></i>
+            <span>Alertes sur tes axes préférés</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="auth-branding__decoration" aria-hidden="true">
+        <span class="circle circle--1"></span>
+        <span class="circle circle--2"></span>
+        <span class="circle circle--3"></span>
+      </div>
+    </aside>
+
+    <!-- Panneau droit : formulaire -->
+    <section class="auth-form-wrapper">
+      <div class="auth-form">
+        <header class="auth-form__header">
+          <h2 class="auth-form__title">Créer un compte</h2>
+          <p class="auth-form__subtitle">Remplis le formulaire pour commencer</p>
+        </header>
+
+        @if (error()) {
+          <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            <span class="flex-grow-1">{{ error() }}</span>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Fermer"
+              (click)="error.set('')"
+            ></button>
+          </div>
+        }
+
+        @if (success()) {
+          <div class="alert alert-success d-flex align-items-center gap-2" role="status">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+            <span class="flex-grow-1">{{ success() }}</span>
+          </div>
+        }
+
+        <form class="auth-form__fields" (ngSubmit)="register()" novalidate>
+          <!-- Prénom + Nom -->
+          <div class="row g-3">
+            <div class="col-12 col-sm-6">
+              <label for="firstName" class="form-label">Prénom</label>
+              <div class="input-group">
+                <span class="input-group-text" aria-hidden="true">
+                  <i class="bi bi-person"></i>
+                </span>
+                <input
+                  id="firstName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Awa"
+                  autocomplete="given-name"
+                  required
+                  [(ngModel)]="firstName"
+                  name="firstName"
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label for="lastName" class="form-label">Nom</label>
+              <div class="input-group">
+                <span class="input-group-text" aria-hidden="true">
+                  <i class="bi bi-person"></i>
+                </span>
+                <input
+                  id="lastName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Kouassi"
+                  autocomplete="family-name"
+                  required
+                  [(ngModel)]="lastName"
+                  name="lastName"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="form-label">Adresse email</label>
+            <div class="input-group">
+              <span class="input-group-text" aria-hidden="true">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                placeholder="nom@exemple.com"
+                autocomplete="email"
+                required
+                [(ngModel)]="email"
+                name="email"
+              />
+            </div>
+          </div>
+
+          <!-- Mot de passe -->
+          <div>
+            <label for="password" class="form-label">Mot de passe</label>
+            <div class="input-group">
+              <span class="input-group-text" aria-hidden="true">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                required
+                [(ngModel)]="password"
+                name="password"
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                [attr.aria-label]="
+                  showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+                "
+                (click)="togglePassword()"
+              >
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+
+            @if (password) {
+              <div class="password-strength" aria-live="polite">
+                <div class="password-strength__bar" aria-hidden="true">
+                  @for (i of [1, 2, 3, 4]; track i) {
+                    <span
+                      class="password-strength__segment"
+                      [class.is-active]="passwordStrength.level >= i"
+                      [style.--segment-color]="
+                        passwordStrength.level >= i ? passwordStrength.colorVar : null
+                      "
+                    ></span>
+                  }
+                </div>
+                <span
+                  class="password-strength__text"
+                  [style.color]="passwordStrength.colorVar"
+                >
+                  {{ passwordStrength.text }}
+                </span>
+              </div>
+            }
+          </div>
+
+          <!-- Confirmation -->
+          <div>
+            <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+            <div class="input-group">
+              <span class="input-group-text" aria-hidden="true">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                class="form-control"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                required
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                [attr.aria-label]="
+                  showConfirmPassword
+                    ? 'Masquer la confirmation'
+                    : 'Afficher la confirmation'
+                "
+                (click)="toggleConfirmPassword()"
+              >
+                <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+
+            @if (confirmPassword && password !== confirmPassword) {
+              <p class="form-error" role="alert">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                Les mots de passe ne correspondent pas.
+              </p>
+            }
+          </div>
+
+          <!-- Conditions -->
+          <div class="form-check">
+            <input
+              id="acceptTerms"
+              type="checkbox"
+              class="form-check-input"
+              [(ngModel)]="acceptTerms"
+              name="acceptTerms"
+            />
+            <label for="acceptTerms" class="form-check-label auth-form__terms">
+              J'accepte les <a href="#" class="auth-form__link">conditions d'utilisation</a>
+              et la <a href="#" class="auth-form__link">politique de confidentialité</a>.
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              <span>Création en cours…</span>
+            } @else {
+              <span>Créer mon compte</span>
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            }
+          </button>
+        </form>
+
+        <p class="auth-form__footer">
+          Déjà un compte ?
+          <a routerLink="/connexion">Se connecter</a>
+        </p>
+
+        <p class="auth-form__notice" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          Démo sans serveur : n'utilise pas un vrai mot de passe.
+        </p>
+      </div>
+    </section>
+  </div>
+</div>

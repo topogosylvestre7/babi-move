@@ -1,0 +1,447 @@
+<section class="contribute">
+  @if (!isLoggedIn()) {
+    <div class="gate">
+      <div class="gate__card">
+        <span class="gate__icon" aria-hidden="true"><i class="bi bi-megaphone-fill"></i></span>
+        <h1 class="gate__title">Partage ce que tu vois sur la route</h1>
+        <p class="gate__text">
+          Connecte-toi pour signaler un embouteillage, un accident ou un prix réel. Ça prend moins
+          de 15 secondes et ça aide les autres Babi à choisir leur chemin.
+        </p>
+        <button type="button" class="btn btn-primary btn-lg" (click)="login()">
+          <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+          Se connecter
+        </button>
+      </div>
+    </div>
+  } @else {
+    <header class="head">
+      <div class="head__inner">
+        <div class="head__text">
+          <h1 class="head__title">Signaler un incident</h1>
+          <p class="head__subtitle">
+            Ce que tu vois sur la route aide les autres à éviter le bouchon. Choisis, localise,
+            envoie.
+          </p>
+        </div>
+
+        @if (totalCount() > 0) {
+          <dl class="head__stats">
+            <div>
+              <dd>{{ totalCount() }}</dd>
+              <dt>signalement{{ totalCount() > 1 ? 's' : '' }}</dt>
+            </div>
+            <div>
+              <dd>{{ pendingCount() }}</dd>
+              <dt>en attente</dt>
+            </div>
+          </dl>
+        }
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- ============================================================
+           FORMULAIRE
+           ============================================================ -->
+      <form class="report" (ngSubmit)="submit()" novalidate>
+        @if (editingId()) {
+          <div class="editing-banner">
+            <div class="editing-banner__text">
+              <i class="bi bi-pencil-square" aria-hidden="true"></i>
+              <span>Tu modifies un signalement existant.</span>
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">
+              Annuler
+            </button>
+          </div>
+        }
+
+        <!-- Quoi -->
+        <fieldset class="ask">
+          <legend class="ask__title">Que se passe-t-il ?</legend>
+
+          <div class="types" role="radiogroup" aria-label="Type d'incident">
+            @for (t of types; track t.value) {
+              <button
+                type="button"
+                role="radio"
+                class="type"
+                [class]="'type tone--' + t.tone"
+                [class.is-active]="type() === t.value"
+                [attr.aria-checked]="type() === t.value"
+                (click)="selectType(t.value)"
+              >
+                <span class="type__icon" aria-hidden="true">
+                  <i class="bi" [ngClass]="t.icon"></i>
+                </span>
+                <span class="type__label">{{ t.label }}</span>
+              </button>
+            }
+          </div>
+        </fieldset>
+
+        <!-- Où -->
+        <fieldset class="ask">
+          <legend class="ask__title">Où ?</legend>
+
+          <div class="chips" role="radiogroup" aria-label="Commune">
+            @for (c of popularCommunes(); track c.id) {
+              <button
+                type="button"
+                role="radio"
+                class="chip"
+                [class.is-active]="commune() === c.id"
+                [attr.aria-checked]="commune() === c.id"
+                (click)="selectCommune(c.id)"
+              >
+                {{ c.name }}
+              </button>
+            }
+
+            <label class="chip chip--select" [class.is-active]="!!otherValue()">
+              <select
+                name="other-commune"
+                aria-label="Autre commune"
+                [ngModel]="otherValue()"
+                (ngModelChange)="onOtherCommune($event)"
+              >
+                <option value="" disabled>Autre commune</option>
+                @for (c of otherCommunes(); track c.id) {
+                  <option [value]="c.id">{{ c.name }}</option>
+                }
+              </select>
+              <i class="bi bi-chevron-down" aria-hidden="true"></i>
+            </label>
+          </div>
+
+          <button type="button" class="geo" [disabled]="locating()" (click)="useMyPosition()">
+            @if (locating()) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              Localisation…
+            } @else {
+              <i class="bi bi-crosshair" aria-hidden="true"></i>
+              Utiliser ma position
+            }
+          </button>
+
+          @if (geoError()) {
+            <p class="note note--error" role="alert">
+              <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+              {{ geoError() }}
+            </p>
+          }
+        </fieldset>
+
+        <!-- Détails -->
+        <fieldset class="ask">
+          <legend class="ask__title">Dis-nous en plus</legend>
+
+          <div class="phrases" aria-label="Phrases rapides">
+            @for (p of quickPhrases(); track p) {
+              <button
+                type="button"
+                class="phrase"
+                [class.is-used]="isPhraseUsed(p)"
+                [attr.aria-pressed]="isPhraseUsed(p)"
+                (click)="addPhrase(p)"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="isPhraseUsed(p) ? 'bi-check2' : 'bi-plus-lg'"
+                  aria-hidden="true"
+                ></i>
+                {{ p }}
+              </button>
+            }
+          </div>
+
+          <div class="field">
+            <label class="sr-only" for="description">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              class="field__input"
+              rows="3"
+              placeholder="Ex : grosse galère sur le pont HKB, sens Cocody vers Marcory."
+              [attr.maxlength]="maxDescription"
+              [ngModel]="description()"
+              (ngModelChange)="onDescription($event)"
+            ></textarea>
+            <span class="field__count" [class.is-low]="remaining() < 30" aria-live="polite">
+              {{ remaining() }}
+            </span>
+          </div>
+
+          <!-- Photo -->
+          <input
+            type="file"
+            id="photo-input"
+            class="sr-only"
+            accept="image/*"
+            tabindex="-1"
+            aria-hidden="true"
+            (change)="onFileChange($event)"
+          />
+
+          @if (!photo()) {
+            <button
+              type="button"
+              class="photo-add"
+              [class.is-dragging]="isDragging()"
+              (click)="triggerInput()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave()"
+              (drop)="onDrop($event)"
+            >
+              <i class="bi bi-camera" aria-hidden="true"></i>
+              <span class="photo-add__text">
+                Ajouter une photo
+                <small>Facultatif. JPG ou PNG, 2 Mo maximum.</small>
+              </span>
+            </button>
+          } @else {
+            <div class="photo">
+              <img [src]="photo()?.dataUrl" alt="Aperçu de ta photo" class="photo__img" />
+              <span class="photo__name">{{ photo()?.name }}</span>
+              <button type="button" class="photo__remove" (click)="removePhoto()">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+                Retirer
+              </button>
+            </div>
+          }
+
+          @if (fileError()) {
+            <p class="note note--error" role="alert">
+              <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+              {{ fileError() }}
+            </p>
+          }
+        </fieldset>
+
+        <!-- Envoi -->
+        <div class="sendbar">
+          @if (error()) {
+            <p class="note note--error" role="alert">
+              <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+              {{ error() }}
+            </p>
+          }
+          @if (success()) {
+            <p class="note note--success" role="status">
+              <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+              Signalement envoyé, merci. Il est en attente de confirmation.
+            </p>
+          }
+
+          <div class="sendbar__row">
+            <p class="sendbar__summary" [class]="'sendbar__summary tone--' + tone()">
+              <i class="bi" [ngClass]="selectedType()?.icon" aria-hidden="true"></i>
+              {{ selectedType()?.label }} à {{ selectedCommuneName() }}
+            </p>
+
+            <button type="submit" class="btn btn-primary send" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                Envoi…
+              } @else {
+                <i
+                  class="bi"
+                  [ngClass]="editingId() ? 'bi-check2-circle' : 'bi-send-fill'"
+                  aria-hidden="true"
+                ></i>
+                {{ editingId() ? 'Enregistrer les modifications' : 'Envoyer le signalement' }}
+              }
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- ============================================================
+           APERÇU + HISTORIQUE
+           ============================================================ -->
+      <aside class="side">
+        <section
+          class="preview"
+          [class]="'preview tone--' + tone()"
+          aria-labelledby="preview-title"
+        >
+          <h2 id="preview-title" class="side__title">Ce que les autres verront</h2>
+
+          <article class="preview__card">
+            <header class="preview__head">
+              <span class="preview__type">
+                <i class="bi" [ngClass]="selectedType()?.icon" aria-hidden="true"></i>
+                {{ selectedType()?.label }}
+              </span>
+              <span class="preview__time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                À l’instant
+              </span>
+            </header>
+
+            <p class="preview__desc" [class.is-placeholder]="!description().trim()">
+              {{ description().trim() || 'Ta description apparaîtra ici.' }}
+            </p>
+
+            @if (photo(); as p) {
+              <img class="preview__photo" [src]="p.dataUrl" alt="Aperçu de ta photo" />
+            }
+
+            <footer class="preview__foot">
+              <span class="pill">{{ selectedCommuneName() }}</span>
+              <span class="preview__status">En attente de confirmation</span>
+            </footer>
+          </article>
+        </section>
+
+        <section class="mine" aria-labelledby="mine-title">
+          <h2 id="mine-title" class="side__title">Mes signalements</h2>
+
+          @if (myContributions().length === 0) {
+            <div class="mine__empty">
+              <i class="bi bi-megaphone" aria-hidden="true"></i>
+              <p>Aucun signalement pour l’instant. Le premier que tu envoies apparaîtra ici.</p>
+            </div>
+          } @else {
+            <ol class="timeline">
+              @for (c of myContributions(); track c.id) {
+                <li [class]="'timeline__item tone--' + typeTone(c.type)">
+                  <span class="timeline__icon" aria-hidden="true">
+                    <i class="bi" [ngClass]="typeIcon(c.type)"></i>
+                  </span>
+                  <div class="timeline__body">
+                    <div class="timeline__head">
+                      <span class="timeline__type">{{ typeLabel(c.type) }}</span>
+                      <span
+                        class="timeline__status"
+                        [class]="'timeline__status status--' + c.status"
+                      >
+                        {{ statusLabel(c.status) }}
+                      </span>
+                    </div>
+                    <p class="timeline__desc">{{ c.description }}</p>
+
+                    <!-- Actions -->
+                    <div class="timeline__actions">
+                      <button
+                        type="button"
+                        class="timeline__action"
+                        (click)="openDetail(c)"
+                        title="Voir le détail"
+                      >
+                        <i class="bi bi-eye"></i> Voir
+                      </button>
+                      <button
+                        type="button"
+                        class="timeline__action"
+                        (click)="startEdit(c)"
+                        title="Modifier"
+                      >
+                        <i class="bi bi-pencil"></i> Modifier
+                      </button>
+                      <button
+                        type="button"
+                        class="timeline__action timeline__action--danger"
+                        (click)="askDelete(c)"
+                        title="Supprimer"
+                      >
+                        <i class="bi bi-trash"></i> Supprimer
+                      </button>
+                    </div>
+
+                    <div class="timeline__meta">
+                      <span>
+                        <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                        {{ communeName(c.commune) }}
+                      </span>
+                      <span>
+                        <i class="bi bi-calendar" aria-hidden="true"></i>
+                        {{ formatDate(c.createdAt) }}
+                      </span>
+                      @if (c.photo) {
+                        <span>
+                          <i class="bi bi-image" aria-hidden="true"></i>
+                          Photo
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </li>
+              }
+            </ol>
+          }
+        </section>
+      </aside>
+    </div>
+  }
+</section>
+
+<!-- ============================================================
+     MODALE DÉTAIL (LibraryUI Modal)
+     ============================================================ -->
+@if (selectedContribution(); as c) {
+  <div class="detail-backdrop" (click)="closeDetail()">
+    <div class="detail" (click)="$event.stopPropagation()">
+      <button class="detail__close" (click)="closeDetail()" aria-label="Fermer">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="detail__header">
+        <div class="detail__icon" [class]="'detail__icon tone--' + typeTone(c.type)">
+          <i class="bi" [ngClass]="typeIcon(c.type)"></i>
+        </div>
+        <h3>{{ typeLabel(c.type) }}</h3>
+        <span class="detail__status" [class]="'detail__status status--' + c.status">
+          {{ statusLabel(c.status) }}
+        </span>
+      </div>
+
+      <div class="detail__body">
+        @if (c.photo) {
+          <img [src]="c.photo.dataUrl" alt="Photo du signalement" class="detail__photo" />
+        }
+        <p class="detail__desc">{{ c.description }}</p>
+        <div class="detail__meta">
+          <span><i class="bi bi-geo-alt-fill"></i> {{ communeName(c.commune) }}</span>
+          <span><i class="bi bi-calendar"></i> {{ formatDate(c.createdAt) }}</span>
+        </div>
+      </div>
+
+      <div class="detail__btns">
+        <button class="detail__cancel" (click)="closeDetail()">Fermer</button>
+        <button class="detail__confirm" (click)="startEdit(c)">
+          <i class="bi bi-pencil"></i> Modifier
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (pendingDelete(); as d) {
+  <div class="confirm-backdrop" (click)="cancelDelete()">
+    <div
+      class="confirm"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-text"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="confirm__icon" aria-hidden="true">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+      </div>
+      <h3 id="confirm-title" class="confirm__title">Supprimer ce signalement ?</h3>
+      <p id="confirm-text" class="confirm__text">
+        Le signalement « {{ typeLabel(d.type) }} » à {{ communeName(d.commune) }} sera supprimé
+        définitivement. Cette action est irréversible.
+      </p>
+      <div class="confirm__btns">
+        <button type="button" class="confirm__cancel" (click)="cancelDelete()">Annuler</button>
+        <button type="button" class="confirm__delete" (click)="confirmDelete()">
+          <i class="bi bi-trash3" aria-hidden="true"></i> Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+}
