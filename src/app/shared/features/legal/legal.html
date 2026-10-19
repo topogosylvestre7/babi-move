@@ -1,0 +1,119 @@
+<section class="legal-page">
+  <header class="legal-hero">
+    <div class="legal-hero__inner">
+      <h1 class="legal-hero__title">Informations légales</h1>
+      <p class="legal-hero__subtitle">Tout ce qu'il faut savoir sur l'utilisation de Babi Move.</p>
+    </div>
+  </header>
+
+  <div class="legal-body">
+    <div class="legal-container">
+      <!-- Navigation par onglets -->
+      <nav class="legal-tabs">
+        <button
+          [class.active]="activeTab === 'confidentialite'"
+          (click)="activeTab = 'confidentialite'"
+        >
+          Confidentialité
+        </button>
+        <button [class.active]="activeTab === 'cgu'" (click)="activeTab = 'cgu'">CGU</button>
+        <button [class.active]="activeTab === 'cookies'" (click)="activeTab = 'cookies'">
+          Cookies
+        </button>
+        <button [class.active]="activeTab === 'mentions'" (click)="activeTab = 'mentions'">
+          Mentions légales
+        </button>
+      </nav>
+
+      <!-- Contenu -->
+      <div class="legal-content">
+        @if (activeTab === 'confidentialite') {
+          <h2>Politique de confidentialité</h2>
+          <p>
+            Babi Move a pour ambition de devenir
+            <strong>l'outil de déplacement moyen de l'Ivoirien</strong>, en commençant par le Grand
+            Abidjan. Pour y parvenir, nous plaçons la confiance et le respect de votre vie privée au
+            cœur de notre démarche.
+          </p>
+          <p>
+            Actuellement, dans cette version de démonstration, toutes vos données (historique,
+            favoris, signalements) sont stockées <strong>uniquement sur votre appareil</strong> (via
+            le localStorage de votre navigateur).
+          </p>
+          <p>
+            Aucune donnée personnelle n'est envoyée à un serveur distant ou partagée avec des tiers.
+            Vous gardez le contrôle total et pouvez effacer vos données à tout moment depuis votre
+            espace personnel.
+          </p>
+          <p>
+            <em
+              >À terme, lorsque l'application sera connectée à une infrastructure réelle, une
+              politique de confidentialité complète et conforme aux normes en vigueur sera mise en
+              place.</em
+            >
+          </p>
+        }
+
+        @if (activeTab === 'cgu') {
+          <h2>Conditions Générales d'Utilisation</h2>
+          <p>
+            Babi Move est une application de démonstration réalisée dans le cadre du
+            <strong>LibraryUI Challenge #01</strong>. L'objectif à long terme est de fournir aux
+            Ivoiriens un outil fiable pour anticiper et optimiser leurs déplacements quotidiens.
+          </p>
+          <p>
+            <strong>Transparence des données :</strong> Pour l'heure, les tarifs, durées,
+            itinéraires et informations de circulation sont des
+            <strong>estimations simulées</strong> à des fins de démonstration. Ils ne reflètent pas
+            la réalité en temps réel et ne doivent pas être utilisés pour prendre des décisions
+            critiques (comme un rendez-vous urgent ou un calcul de budget précis).
+          </p>
+          <p>
+            L'application s'engage à terme à intégrer des sources de données réelles et vérifiées
+            pour offrir un service fiable et professionnel.
+          </p>
+        }
+
+        @if (activeTab === 'cookies') {
+          <h2>Gestion des cookies</h2>
+          <p>
+            Babi Move n'utilise <strong>aucun cookie de traçage publicitaire</strong> ou d'analyse
+            comportementale. Votre navigation n'est pas suivie par des tiers.
+          </p>
+          <p>
+            Nous utilisons uniquement le stockage local (localStorage) pour assurer le bon
+            fonctionnement de l'application (maintien de la session, sauvegarde de vos préférences,
+            historique de recherche et contributions).
+          </p>
+          <p>
+            Le stockage local est nécessaire au fonctionnement de l'application. En utilisant Babi
+            Move, vous acceptez l'utilisation de ces mécanismes techniques essentiels.
+          </p>
+        }
+
+        @if (activeTab === 'mentions') {
+          <h2>Mentions légales</h2>
+          <p>
+            <strong>Éditeur :</strong> Projet Babi Move - Réalisé dans le cadre du LibraryUI
+            Challenge #01.
+          </p>
+          <p>
+            <strong>Objectif du projet :</strong> Créer la plateforme de mobilité urbaine de
+            référence en Côte d'Ivoire, adaptée au jargon local ("Babi") et aux réalités du terrain
+            (gbaka, woro-woro, SOTRA, bateau-bus).
+          </p>
+          <p><strong>Hébergement :</strong> Render (https://render.com)</p>
+          <p><strong>Sources cartographiques :</strong> OpenStreetMap, Nominatim, OSRM.</p>
+          <p>
+            <strong>Données de transport :</strong> Actuellement simulées et non officielles.
+            L'objectif est de remplacer progressivement ces données par des sources réelles et des
+            contributions citoyennes vérifiées.
+          </p>
+          <p>
+            <strong>Contact :</strong> <a href="mailto:contact@babimove.ci">contact@babimove.ci</a>
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+</section>

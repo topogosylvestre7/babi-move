@@ -73,7 +73,12 @@
     <span>© {{ currentYear }} {{ brandName }}. Tous droits réservés.</span>
     <div class="footer-bottom-links">
       @for (link of bottomLinks; track link.label) {
-        <a [href]="link.href">{{ link.label }}</a>
+        <!-- On vérifie si c'est un routerLink ou un href -->
+        @if (link.routerLink) {
+          <a [routerLink]="link.routerLink">{{ link.label }}</a>
+        } @else {
+          <a [href]="link.href">{{ link.label }}</a>
+        }
       }
     </div>
   </div>

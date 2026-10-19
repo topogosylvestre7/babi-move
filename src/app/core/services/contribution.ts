@@ -69,4 +69,9 @@ export class ContributionService {
   getUserContributions(userId: string): Contribution[] {
     return this.getAll().filter((c) => c.userId === userId);
   }
+
+  // Dans contribution.service.ts
+  getAllContributions(): Contribution[] {
+    return this.storage.read<Contribution[]>('contributions') ?? [];
+  }
 }

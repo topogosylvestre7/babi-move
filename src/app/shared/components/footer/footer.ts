@@ -31,7 +31,6 @@ export interface SocialLink {
 export class FullFooter {
   private readonly auth = inject(AuthService);
 
-  // Exposé pour le template (CTA du bas)
   readonly isLoggedIn = this.auth.isLoggedIn;
 
   readonly brandLetter = 'B';
@@ -46,7 +45,6 @@ export class FullFooter {
     { icon: 'bi-envelope', href: '#', label: 'Email' },
   ];
 
-  // Les colonnes s'adaptent à la connexion
   readonly columns = computed<FooterColumn[]>(() => {
     const loggedIn = this.isLoggedIn();
 
@@ -56,7 +54,6 @@ export class FullFooter {
       { label: 'Recherche', routerLink: '/resultats' },
     ];
 
-    // On ajoute "Contribuer" dans la nav QUE si on est connecté
     if (loggedIn) {
       navLinks.push({ label: 'Contribuer', routerLink: '/contribuer', badge: 'Nouveau' });
     }
@@ -78,25 +75,25 @@ export class FullFooter {
           : [
               { label: 'Se connecter', routerLink: '/connexion' },
               { label: "S'inscrire", routerLink: '/inscription' },
-            ], 
+            ],
       },
       {
         title: 'À propos',
         links: [
-          { label: 'Le projet', href: '/a-propos' },
-          { label: 'Sources des données', href: '#' },
-          { label: 'Confidentialité', href: '#' },
-          { label: 'Contact', href: '#' },
+          { label: 'Le projet', routerLink: '/a-propos' }, 
+          { label: 'Sources des données', href: 'https://www.openstreetmap.org/' }, 
+          { label: 'Confidentialité', routerLink: '/legal' }, 
+          { label: 'Contact', href: 'mailto:contact@babimove.ci' }, 
         ],
       },
     ];
   });
 
   readonly bottomLinks: FooterLink[] = [
-    { label: 'Confidentialité', href: '#' },
-    { label: 'CGU', href: '#' },
-    { label: 'Cookies', href: '#' },
-    { label: 'Mentions légales', href: '#' },
+    { label: 'Confidentialité', routerLink: '/legal' },
+    { label: 'CGU', routerLink: '/legal' },
+    { label: 'Cookies', routerLink: '/legal' },
+    { label: 'Mentions légales', routerLink: '/legal' },
   ];
 
   readonly currentYear = new Date().getFullYear();

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
 import { ContributionService } from '../../../core/services/contribution';
-import { Contribution } from '../../../core/models/models';
+import { DataService } from '../../../core/services/data'; // Pour avoir les noms des communes
 
 export interface NavLink {
   label: string;
@@ -31,6 +31,7 @@ interface AppNotification {
 export class Header {
   private readonly auth = inject(AuthService);
   private readonly contributionService = inject(ContributionService);
+  private readonly data = inject(DataService);
 
   readonly isLoggedIn = this.auth.isLoggedIn;
   readonly currentUser = this.auth.currentUser;
@@ -39,7 +40,6 @@ export class Header {
   readonly isUserMenuOpen = signal(false);
   readonly isNotifOpen = signal(false);
 
-  // Pour simuler l'état "lu" localement (non persistant pour la démo)
   private readonly readNotifs = signal<Set<string>>(new Set());
 
   readonly userInitials = computed(() => {
@@ -50,44 +50,69 @@ export class Header {
     return (first + last).toUpperCase();
   });
 
-  // Génération des notifications depuis les contributions
+  // 🔥 CORRECTION ICI : On récupère TOUTES les contributions et on simule le cycle de vie
   readonly notifications = computed<AppNotification[]>(() => {
     const user = this.currentUser();
     if (!user) return [];
 
-    const contribs = this.contributionService.getUserContributions(user.id);
+    // On utilise getAllContributions() pour être sûr de ne rien rater
+    // (Si la méthode n'existe pas, on utilise getUserContributions mais on vérifie)
+    const allContribs = this.contributionService.getAllContributions();
+
+    // On filtre pour ne garder que celles de l'utilisateur actuel
+    const myContribs = allContribs.filter((c) => c.userId === user.id);
+
     const readSet = this.readNotifs();
+    const notifs: AppNotification[] = [];
 
-    return contribs
-      .map((c) => {
-        let type: 'info' | 'success' | 'warning' | 'error' = 'info';
-        let title = 'Signalement';
-        let statusLabel = '';
+    myContribs.forEach((c) => {
+      const communeName = this.data.getCommuneById(c.commune)?.name ?? c.commune;
+      const baseId = c.id;
 
-        if (c.status === 'pending') {
-          type = 'warning';
-          title = 'Signalement en attente';
-          statusLabel = 'en attente';
-        } else if (c.status === 'published') {
-          type = 'success';
-          title = 'Signalement validé';
-          statusLabel = 'validé';
-        } else if (c.status === 'rejected') {
-          type = 'error';
-          title = 'Signalement rejeté';
-          statusLabel = 'rejeté';
-        }
+      // 1. Notification de création (toujours présente)
+      notifs.push({
+        id: `${baseId}-created`,
+        type: 'info',
+        title: 'Signalement envoyé',
+        message: `Votre signalement "${c.type}" à ${communeName} a bien été reçu.`,
+        time: this.formatTime(c.createdAt),
+        read: readSet.has(`${baseId}-created`),
+      });
 
-        return {
-          id: c.id,
-          type,
-          title,
-          message: `Votre signalement "${c.type}" à ${c.commune} est ${statusLabel}.`,
+      // 2. Notification de statut (simulée)
+      // Dans une vraie app, ceci viendrait d'une API. Ici, on simule.
+      if (c.status === 'pending') {
+        notifs.push({
+          id: `${baseId}-pending`,
+          type: 'warning',
+          title: 'En attente de validation',
+          message: `Votre signalement à ${communeName} est en cours de vérification par la communauté.`,
+          time: this.formatTime(c.createdAt), // Même date pour la démo
+          read: readSet.has(`${baseId}-pending`),
+        });
+      } else if (c.status === 'published') {
+        notifs.push({
+          id: `${baseId}-published`,
+          type: 'success',
+          title: 'Signalement validé',
+          message: `Votre signalement à ${communeName} a été confirmé et est visible par tous.`,
           time: this.formatTime(c.createdAt),
-          read: readSet.has(c.id),
-        };
-      })
-      .sort((a, b) => b.id.localeCompare(a.id));
+          read: readSet.has(`${baseId}-published`),
+        });
+      } else if (c.status === 'rejected') {
+        notifs.push({
+          id: `${baseId}-rejected`,
+          type: 'error',
+          title: 'Signalement refusé',
+          message: `Votre signalement à ${communeName} n'a pas pu être validé.`,
+          time: this.formatTime(c.createdAt),
+          read: readSet.has(`${baseId}-rejected`),
+        });
+      }
+    });
+
+    // On trie par date (les plus récentes d'abord)
+    return notifs.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
   });
 
   readonly unreadCount = computed(() => this.notifications().filter((n) => !n.read).length);
@@ -98,28 +123,25 @@ export class Header {
     { label: 'Communauté', routerLink: '/notre-communaute' },
   ];
 
+  // ... (le reste des méthodes toggleMenu, toggleNotifMenu, etc. reste identique)
+
   toggleMenu(): void {
     this.menuOpen.update((v) => !v);
   }
-
   closeMenu(): void {
     this.menuOpen.set(false);
   }
-
   toggleUserMenu(): void {
     this.isUserMenuOpen.update((v) => !v);
     if (this.isUserMenuOpen()) this.isNotifOpen.set(false);
   }
-
   closeUserMenu(): void {
     this.isUserMenuOpen.set(false);
   }
-
   toggleNotifMenu(): void {
     this.isNotifOpen.update((v) => !v);
     if (this.isNotifOpen()) this.isUserMenuOpen.set(false);
   }
-
   closeNotifMenu(): void {
     this.isNotifOpen.set(false);
   }

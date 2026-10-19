@@ -69,6 +69,12 @@ export const routes: Routes = [
           import('./shared/features/communaute/communaute').then((c) => c.Communaute),
         title: 'Voir tous les signalements citoyens',
       },
+      {
+        path: 'legal',
+        // canActivate: [authGuard],
+        loadComponent: () => import('./shared/features/legal/legal').then((c) => c.Legal),
+        title: 'Informations légales',
+      },
     ],
   },
 
