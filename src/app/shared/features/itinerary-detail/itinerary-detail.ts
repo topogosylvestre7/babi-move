@@ -82,7 +82,7 @@ export class ItineraryDetail implements OnInit, AfterViewInit, OnDestroy {
   private mapToken = 0;
   private timer: number | null = null;
 
-  // --- État ---
+  // État ---
   readonly itinerary = signal<Itinerary | null>(null);
   readonly notFound = signal(false);
   readonly currentStepIndex = signal(0);
@@ -103,7 +103,7 @@ export class ItineraryDetail implements OnInit, AfterViewInit, OnDestroy {
 
   readonly loaded = this.data.loaded;
 
-  // --- Heures ---
+  // Heures ---
   private readonly baseTime = computed(() => {
     const it = this.itinerary();
     if (!it) return this.now();
@@ -128,7 +128,7 @@ export class ItineraryDetail implements OnInit, AfterViewInit, OnDestroy {
     return Math.max(0, Math.ceil((eta - this.now()) / 60_000));
   });
 
-  // --- Titre dynamique ---
+  // Titre dynamique ---
   readonly title = computed(() => {
     const it = this.itinerary();
     if (!it) return '';
@@ -178,7 +178,7 @@ export class ItineraryDetail implements OnInit, AfterViewInit, OnDestroy {
     return Math.max(60, 98 - criticals * 15 - highs * 8);
   });
 
-  // --- Étapes ---
+  // Étapes ---
   readonly steps = computed<DisplayStep[]>(() => {
     const it = this.itinerary();
     if (!it) return [];
@@ -224,7 +224,7 @@ export class ItineraryDetail implements OnInit, AfterViewInit, OnDestroy {
     return list[this.currentStepIndex()] ?? null;
   });
 
-  // --- Alertes ---
+  // Alertes ---
   readonly tripAlerts = computed(() => {
     const it = this.itinerary();
     if (!it) return [];
@@ -238,7 +238,7 @@ export class ItineraryDetail implements OnInit, AfterViewInit, OnDestroy {
     Math.max(0, ...this.tripAlerts().map((a) => a.estimatedDurationMin ?? 0)),
   );
 
-  // --- Budget ---
+  // Budget ---
   readonly monthlyBudget = computed(() => {
     const it = this.itinerary();
     if (!it) return null;

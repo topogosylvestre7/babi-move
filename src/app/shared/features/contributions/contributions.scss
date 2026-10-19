@@ -1,4 +1,5 @@
 // Page Contribuer — Babi Move.
+// c'est un composant de libraryUI
 
 :host {
   display: block;
@@ -197,7 +198,7 @@
   overflow: hidden;
 }
 
-/* --- Bandeau d'édition --- */
+/* Bandeau d'édition */
 .editing-banner {
   display: flex;
   align-items: center;
@@ -257,7 +258,7 @@
   }
 }
 
-/* --- Types --- */
+/* Types */
 .types {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -329,7 +330,7 @@
   }
 }
 
-/* --- Communes --- */
+/* Communes */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -425,7 +426,7 @@
   }
 }
 
-/* --- Détails --- */
+/* Détails */
 .phrases {
   display: flex;
   flex-wrap: wrap;
@@ -520,7 +521,7 @@
   }
 }
 
-/* --- Photo --- */
+/* Photo */
 .photo-add {
   display: flex;
   align-items: center;
@@ -623,7 +624,7 @@
   }
 }
 
-/* --- Messages --- */
+/* Messages */
 .note {
   display: flex;
   align-items: flex-start;
@@ -650,7 +651,7 @@
   }
 }
 
-/* --- Barre d'envoi --- */
+/* Barre d'envoi */
 .sendbar {
   position: sticky;
   bottom: 0;
@@ -724,7 +725,7 @@
   }
 }
 
-/* --- Aperçu --- */
+/* Aperçu */
 .preview {
   &__card {
     display: flex;
@@ -813,7 +814,7 @@
   color: var(--em-on-surface-variant);
 }
 
-/* --- Historique --- */
+/* Historique */
 .mine {
   padding: 1.25rem 1.25rem 1.5rem;
   border-radius: 1.25rem;
@@ -917,7 +918,7 @@
       color: var(--em-secondary);
     }
 
-    &.status--published  {
+    &.status--published {
       background: color-mix(in srgb, var(--em-primary) 12%, transparent);
       color: var(--em-primary);
     }

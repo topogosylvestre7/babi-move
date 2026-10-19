@@ -1,9 +1,6 @@
-// Babi Move – modèles de données
-// Emplacement dans le projet : src/app/core/models/models.ts
-
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 /* Géographie                                                          */
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 
 export const COMMUNE_IDS = [
   'abobo',
@@ -60,9 +57,9 @@ export interface Waypoint {
   source: 'place' | 'geolocation' | 'map';
 }
 
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 /* Transports et itinéraires                                           */
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 
 export type TransportModeId = 'gbaka' | 'woro-woro' | 'sotra' | 'bateau-bus' | 'vtc' | 'marche';
 
@@ -96,7 +93,7 @@ export interface ItineraryStep {
   to: Waypoint;
   costFcfa: number;
   durationMin: number;
-  /** Ex. « Prendre le gbaka jusqu'à Adjamé ». */
+  /** Ex. " Prendre le gbaka jusqu'à Adjamé". */
   instruction: string;
   /** Tracé pour la carte (liste de points). */
   path?: GeoPoint[];
@@ -128,7 +125,7 @@ export type SortCriterion = 'duration' | 'cost';
 export interface SearchQuery {
   origin: Waypoint | null;
   destination: Waypoint | null;
-  /** « now » ou une date ISO 8601. */
+  /** " now" ou une date ISO 8601. */
   departureAt: 'now' | string;
   excludedModes: TransportModeId[];
   sortBy: SortCriterion;
@@ -136,9 +133,9 @@ export interface SearchQuery {
   budgetTimeBalance?: number;
 }
 
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 /* Alertes                                                             */
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 
 export type AlertPriority = 'critical' | 'high' | 'medium' | 'info';
 
@@ -166,9 +163,9 @@ export interface AlertFilter {
   categories: AlertCategory[];
 }
 
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 /* Comptes et espace personnel                                         */
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 
 export interface NotificationPreferences {
   email: boolean;
@@ -218,7 +215,7 @@ export interface PasswordResetRequest {
 export interface Favorite {
   id: string;
   userId: string;
-  /** Ex. « Maison », « Travail », « Fac ». */
+  /** Ex. " Maison", " Travail", " Fac". */
   label: string;
   icon: 'home' | 'work' | 'school' | 'star';
   place: Waypoint;
@@ -243,9 +240,9 @@ export interface HistoryEntry {
   chosenItineraryId?: string;
 }
 
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 /* Contribution citoyenne                                              */
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 
 export type ContributionType = 'embouteillage' | 'accident' | 'prix-reel' | 'arret' | 'autre';
 
@@ -270,13 +267,13 @@ export interface Contribution {
   status: 'pending' | 'published' | 'rejected';
 }
 
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 /* Jeux de données JSON (public/data)                                  */
-/* ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------*/
 
 /**
  * Alerte telle qu'elle est écrite dans alerts.json : la date de mise à jour
- * est exprimée en « minutes écoulées » pour que la démo paraisse toujours
+ * est exprimée en " minutes écoulées" pour que la démo paraisse toujours
  * à jour. Le service calcule `updatedAt` au chargement.
  */
 export type TrafficAlertSeed = Omit<TrafficAlert, 'updatedAt'> & {
@@ -287,9 +284,9 @@ export type TrafficAlertSeed = Omit<TrafficAlert, 'updatedAt'> & {
 export interface TrafficPeriod {
   id: string;
   label: string;
-  /** Début de la période, « HH:MM ». */
+  /** Début de la période, " HH:MM". */
   from: string;
-  /** Fin de la période, « HH:MM » ; peut passer minuit. */
+  /** Fin de la période, " HH:MM" ; peut passer minuit. */
   to: string;
   /** Multiplicateur appliqué aux durées (1 = normal). */
   factor: number;

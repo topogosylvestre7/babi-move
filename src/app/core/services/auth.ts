@@ -90,7 +90,7 @@ export class AuthService {
       list.map((acc) => {
         if (acc.id === current.id) {
           const updated = { ...acc, ...data };
-          updatedUser = this.toUser(updated); // Retire le mdp
+          updatedUser = this.toUser(updated); // on retire le mdp
           return updated;
         }
         return acc;

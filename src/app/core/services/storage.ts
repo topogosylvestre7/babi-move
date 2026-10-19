@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 /**
  * Wrapper safe de localStorage.
- * - Namespace toutes les clés sous « babi-move. ».
+ * - Namespace toutes les clés sous "babi-move."
  * - Ne lève jamais d'erreur : renvoie null / ignore si indisponible
  *   (navigation privée, quota, JSON corrompu).
  */

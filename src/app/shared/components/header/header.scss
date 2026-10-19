@@ -34,7 +34,7 @@
   }
 }
 
-/* --- Marque --- */
+/* Marque */
 .nbar-brand {
   display: flex;
   align-items: center;
@@ -85,7 +85,7 @@
   letter-spacing: 0.05em;
 }
 
-/* --- Navigation Centrale --- */
+/* Navigation Centrale */
 .nbar-nav {
   display: flex;
   align-items: center;
@@ -219,7 +219,7 @@
   border: 2px solid var(--em-surface-lowest);
 }
 
-/* --- Boutons Connexion / Inscription --- */
+/* Boutons Connexion / Inscription */
 .nbar-btn-login {
   font-family: var(--em-font-label);
   font-size: 0.875rem;
@@ -417,7 +417,7 @@
   }
 }
 
-/* --- Burger (Mobile) --- */
+/* Burger (Mobile) */
 .nbar-burger {
   display: none;
   width: 36px;
@@ -442,7 +442,7 @@
   }
 }
 
-/* --- Menu Mobile --- */
+/* Menu Mobile */
 .nbar-mobile {
   display: flex;
   flex-direction: column;

@@ -70,32 +70,32 @@ export class Contributions implements OnInit {
 
   readonly maxDescription = MAX_DESCRIPTION;
 
-  // --- Formulaire ---
+  // Formulaire ---
   readonly type = signal<ContributionType>('embouteillage');
   readonly commune = signal<CommuneId>('cocody');
   readonly description = signal('');
 
-  // --- Édition ---
+  // Édition ---
   readonly editingId = signal<string | null>(null);
 
-  // --- Position ---
+  // Position ---
   readonly locating = signal(false);
   readonly geoError = signal('');
 
-  // --- Upload ---
+  // Upload ---
   readonly isDragging = signal(false);
   readonly photo = signal<FilePreview | null>(null);
   readonly fileError = signal('');
 
-  // --- UI ---
+  // UI ---
   readonly isSubmitting = signal(false);
   readonly success = signal(false);
   readonly error = signal('');
 
-  // --- Historique ---
+  // Historique ---
   readonly myContributions = signal<Contribution[]>([]);
 
-  // --- Modale de détail ---
+  // Modale de détail ---
   readonly selectedContribution = signal<Contribution | null>(null);
 
   readonly types: TypeOption[] = [
@@ -106,7 +106,7 @@ export class Contributions implements OnInit {
     { value: 'autre', label: 'Autre', icon: 'bi-three-dots', tone: 'muted' },
   ];
 
-  // --- Valeurs dérivées ---
+  // Valeurs dérivées ---
   readonly selectedType = computed(() => this.types.find((t) => t.value === this.type()));
   readonly tone = computed<Tone>(() => this.selectedType()?.tone ?? 'muted');
   readonly quickPhrases = computed(() => PHRASES[this.type()] ?? []);
@@ -396,7 +396,7 @@ export class Contributions implements OnInit {
     switch (status) {
       case 'pending':
         return 'En attente';
-      case 'published': 
+      case 'published':
         return 'Confirmé';
       case 'rejected':
         return 'Refusé';

@@ -38,7 +38,7 @@ export class Communaute implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly contributionService = inject(ContributionService);
 
-  // --- Données simulées pour meubler le flux ---
+  // Données simulées pour meubler le flux
   private readonly MOCK_FEED: FeedItem[] = [
     {
       id: 'mock-1',
@@ -94,7 +94,7 @@ export class Communaute implements OnInit {
     { name: 'Yao K.', initials: 'YK', score: 41, badge: '⭐' },
   ];
 
-  // --- Stats globales (simulées + réelles) ---
+  // Stats globales (simulées + réelles)
   readonly totalContributions = computed(() => {
     const user = this.auth.currentUser();
     const myCount = user ? this.contributionService.getUserContributions(user.id).length : 0;
@@ -104,7 +104,7 @@ export class Communaute implements OnInit {
   readonly activeContributors = 342; // Fictif
   readonly resolvedAlerts = 89; // Fictif
 
-  // --- Flux fusionné ---
+  // Flux fusionné
   readonly feed = computed<FeedItem[]>(() => {
     const user = this.auth.currentUser();
     let myContribs: FeedItem[] = [];
@@ -133,7 +133,7 @@ export class Communaute implements OnInit {
     await this.data.load();
   }
 
-  // --- Helpers ---
+  // Helpers
   formatTime(iso: string): string {
     const d = new Date(iso);
     const now = new Date();

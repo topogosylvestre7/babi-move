@@ -76,7 +76,7 @@ export class Home implements OnInit {
   private readonly geolocation = inject(GeolocationService);
   private readonly router = inject(Router);
 
-  // --- État de chargement ---
+  // État de chargement ---
   readonly loaded = this.data.loaded;
   readonly loadError = this.data.error;
   readonly popularCommunes = this.data.popularCommunes;
@@ -105,10 +105,10 @@ export class Home implements OnInit {
   readonly quickRouteLoading = signal(false);
   readonly quickExamples = ['Yopougon → Plateau', 'Cocody → Marcory', 'Abobo → Treichville'];
 
-  // --- Onglet actif dans "L'arsenal complet" ---
+  // Onglet actif dans "L'arsenal complet" ---
   readonly activeFeatureIndex = signal(0);
 
-  // --- Aperçu itinéraire Yopougon → Plateau ---
+  // Aperçu itinéraire Yopougon → Plateau ---
   readonly previewAxis = computed(() => {
     const axis = this.data.findAxis('yopougon', 'plateau');
     if (!axis) return null;
@@ -124,7 +124,7 @@ export class Home implements OnInit {
     };
   });
 
-  // --- Estimation du simulateur ---
+  // Estimation du simulateur ---
   readonly simulatorEstimate = computed<SimulatorEstimate | null>(() => {
     const from = this.departure();
     const to = this.destination();
@@ -141,7 +141,7 @@ export class Home implements OnInit {
     return this.estimateFromAxis(axis);
   });
 
-  // --- Chiffres clés dynamiques ---
+  // Chiffres clés dynamiques ---
   readonly trustNumbers = computed<TrustNumber[]>(() => {
     const modeCount = this.data.modes().length;
     const alertCount = this.data.alerts().length;
@@ -171,7 +171,7 @@ export class Home implements OnInit {
     ];
   });
 
-  // --- Données éditoriales ---
+  // Données éditoriales ---
   readonly pillars: Pillar[] = [
     {
       tag: 'Pilier lagunaire',

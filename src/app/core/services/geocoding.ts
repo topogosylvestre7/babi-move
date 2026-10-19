@@ -171,7 +171,7 @@ export class GeocodingService {
     return !!needle && ` ${haystack} `.includes(` ${needle} `);
   }
 
-  // --- Interne ---
+  // Interne 
 
   private searchLocal(q: string, limit: number): Suggestion[] {
     const places = this.data.places();

@@ -36,7 +36,7 @@ export class Alerts implements OnInit {
   private readonly storage = inject(StorageService);
   private readonly router = inject(Router);
 
-  // --- Exposition ---
+  // Exposition ---
   readonly loaded = this.data.loaded;
   readonly loadError = this.data.error;
   readonly popularCommunes = this.data.popularCommunes;
@@ -45,7 +45,7 @@ export class Alerts implements OnInit {
   readonly filter = this.alerts.filter;
   readonly allSorted = this.alerts.allSorted;
 
-  // --- Compteurs ---
+  // Compteurs ---
   readonly counters = computed<AlertCounters>(() => {
     const list = this.allSorted();
     return {
@@ -57,7 +57,7 @@ export class Alerts implements OnInit {
     };
   });
 
-  // --- Alertes Favoris ---
+  // Alertes Favoris ---
   readonly favoriteAlerts = computed<TrafficAlert[]>(() => {
     if (!this.auth.isLoggedIn()) return [];
     const favoriteLabels = this.favoriteLabels();
@@ -102,7 +102,7 @@ export class Alerts implements OnInit {
   readonly activeCommunes = computed(() => this.filter().communes);
   readonly activePriorities = signal<AlertPriority[]>([]);
 
-  // --- Liste finale ---
+  // Liste finale ---
   readonly visibleAlerts = computed<TrafficAlert[]>(() => {
     let source = this.filtered();
     const priorities = this.activePriorities();

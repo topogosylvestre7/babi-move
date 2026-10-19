@@ -26,7 +26,7 @@ export class Account implements OnInit {
 
   readonly currentUser = this.auth.currentUser;
 
-  // --- Tabs ---
+  // Tabs ---
   readonly activeTab = signal<'overview' | 'settings' | 'security' | 'notifications'>('overview');
 
   readonly tabs = [
@@ -36,7 +36,7 @@ export class Account implements OnInit {
     { id: 'notifications', label: 'Notifications', icon: 'bi-bell' },
   ] as const;
 
-  // --- Édition ---
+  // Édition ---
   readonly editMode = signal(false);
   editedUser = {
     firstName: '',
@@ -46,7 +46,7 @@ export class Account implements OnInit {
     preferredMode: 'gbaka' as TransportModeId,
   };
 
-  // --- Notifications locales ---
+  // Notifications locales ---
   notifications = {
     email: true,
     push: true,
@@ -54,7 +54,7 @@ export class Account implements OnInit {
     newsletter: false,
   };
 
-  // --- Statistiques dynamiques ---
+  // Statistiques dynamiques ---
   readonly userStats = computed<ProfileStat[]>(() => {
     const user = this.currentUser();
     if (!user) return [];

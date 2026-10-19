@@ -109,7 +109,7 @@ export class DataService {
     };
   }
 
-  // --- Accès pratiques pour les autres services ---
+  // Accès pratiques pour les autres services ---
 
   getCommuneById(id: string): Commune | undefined {
     return this.communes().find((c) => c.id === id);

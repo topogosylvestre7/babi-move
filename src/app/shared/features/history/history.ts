@@ -53,7 +53,7 @@ export class History implements OnInit {
     });
   }
 
-  // --- Helpers ---
+  // Helpers ---
 
   formatDate(iso: string): string {
     const d = new Date(iso);

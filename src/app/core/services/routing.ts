@@ -14,8 +14,6 @@ export interface RouteGeometry {
 /**
  * Routing réel via OSRM public.
  * Doc : https://project-osrm.org/docs/v5.24.0/api/
- * Gratuit, pas de clé. Usage raisonnable (1 req/s max recommandé).
- * En prod : héberger son propre OSRM ou proxy pour éviter le rate limit.
  */
 @Injectable({ providedIn: 'root' })
 export class RoutingService {

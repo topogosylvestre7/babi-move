@@ -65,7 +65,7 @@ export class AlertService {
     return this.forCommunes(communes).filter((a) => a.priority !== 'info');
   }
 
-  // --- Filtres ---
+  // Filtres ---
 
   toggleCommune(id: CommuneId): void {
     this._filter.update((f) => ({
@@ -95,7 +95,7 @@ export class AlertService {
     this._filter.set({ communes: [], categories: [] });
   }
 
-  // --- Helpers de présentation ---
+  // Helpers de présentation ---
 
   priorityLabel(p: AlertPriority): string {
     switch (p) {
@@ -142,7 +142,7 @@ export class AlertService {
     return `il y a ${d} j`;
   }
 
-  // --- Interne ---
+  // Interne ---
 
   private sortByPriority(alerts: TrafficAlert[]): TrafficAlert[] {
     return [...alerts].sort((a, b) => {
