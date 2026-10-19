@@ -1,4 +1,7 @@
 // Header Babi Move — basé sur le composant "Navbar Default" de la LibraryUI.
+//
+// Breakpoints alignés sur Bootstrap : "mobile" = moins de 992px,
+// "desktop" = 992px et plus (donc max-width: 991.98px / min-width: 992px).
 
 :host {
   display: block;
@@ -28,7 +31,7 @@
   height: 64px;
   transition: all 0.3s;
 
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     height: 60px;
     padding: 0 1rem;
   }
@@ -93,7 +96,7 @@
   flex: 1;
   justify-content: center;
 
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     display: none;
   }
 }
@@ -146,12 +149,12 @@
   gap: 0.625rem;
   flex-shrink: 0;
 
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     display: none;
   }
 }
 
-/* Actions visibles partout (Cloche + Avatar) */
+/* Actions visibles partout (Cloche + Avatar / Connexion) */
 .nbar-actions-common {
   display: flex;
   align-items: center;
@@ -159,7 +162,7 @@
   flex-shrink: 0;
 
   /* Sur mobile, on pousse ce groupe vers la droite */
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     margin-left: auto;
     margin-right: 0.5rem;
   }
@@ -201,6 +204,7 @@
   transition: all 0.2s;
   font-size: 1.1rem;
   padding: 0;
+  text-decoration: none;
 
   &:hover {
     background: var(--em-surface-container);
@@ -321,7 +325,7 @@
   animation: dropdown-in 0.15s ease-out;
 
   /* Sur mobile, le menu prend toute la largeur */
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     position: fixed;
     top: 70px;
     left: 1rem;
@@ -437,7 +441,7 @@
     background: var(--em-surface-container);
   }
 
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     display: inline-flex;
   }
 }
@@ -454,7 +458,7 @@
   margin-top: 0.5rem;
   box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.1);
 
-  @media (min-width: 993px) {
+  @media (min-width: 992px) {
     display: none;
   }
 }
@@ -520,7 +524,7 @@
   animation: dropdown-in 0.15s ease-out;
 
   /* Sur mobile, on fixe le panneau sous le header */
-  @media (max-width: 992px) {
+  @media (max-width: 991.98px) {
     position: fixed;
     top: 70px;
     left: 1rem;

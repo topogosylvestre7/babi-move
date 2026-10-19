@@ -168,11 +168,21 @@
           }
         </div>
       } @else {
-        <!-- Boutons login/register visibles sur desktop -->
+        <!-- Boutons login/register (Desktop) -->
         <div class="d-none d-lg-flex gap-2">
           <a class="nbar-btn-login" routerLink="/connexion">Connexion</a>
           <a class="nbar-btn-signup" routerLink="/inscription">S'inscrire</a>
         </div>
+
+        <!-- Accès connexion (Mobile) -->
+        <a
+          class="nbar-icon-btn d-lg-none"
+          routerLink="/connexion"
+          aria-label="Connexion"
+          (click)="closeMenu()"
+        >
+          <i class="bi bi-person" aria-hidden="true"></i>
+        </a>
       }
     </div>
 

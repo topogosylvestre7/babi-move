@@ -1,5 +1,7 @@
 => Babi Move
 
+=> Démo en ligne : [https://babi-move.onrender.com](https://babi-move.onrender.com)
+
 Babi Move est une application web progressive (PWA) conçue pour faciliter la mobilité urbaine dans le Grand Abidjan. Elle permet aux usagers de comparer les itinéraires multimodaux (Gbaka, Woro-woro, SOTRA, Bateau-bus, VTC, Marche) en fonction du coût en FCFA et de la durée estimée.
 
 Le nom "Babi" est un clin d'oeil au jargon local pour désigner Abidjan. L'objectif : rendre le déplacement quotidien plus prévisible, plus serein et moins coûteux.
