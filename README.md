@@ -108,3 +108,9 @@ L'architecture actuelle a été pensée pour être facilement connectée à une 
 - Temps réel : Intégrer WebSockets pour la mise à jour instantanée des alertes.
 
 - PWA : Finaliser le service worker pour le mode hors-ligne complet.
+
+Compte de démonstration (pour tester l'espace connecté) :
+
+Email : demo@babimove.ci
+
+Mot de passe : demo1234
