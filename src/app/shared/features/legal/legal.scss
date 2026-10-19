@@ -4,6 +4,10 @@
   min-height: 100vh;
 }
 
+/* =============================================================
+   HERO
+   ============================================================= */
+
 .legal-hero {
   background: var(--em-surface-lowest);
   border-bottom: 1px solid var(--em-divider);
@@ -25,6 +29,10 @@
   }
 }
 
+/* =============================================================
+   BODY
+   ============================================================= */
+
 .legal-body {
   padding: 2rem 1.5rem 4rem;
 }
@@ -35,23 +43,62 @@
   background: var(--em-surface-lowest);
   border: 1px solid var(--em-divider);
   border-radius: 1rem;
-  overflow: hidden;
+  overflow: hidden; /* Important : garde les bords arrondis */
+}
+
+/* =============================================================
+   TABS (Onglets) — Scrollable sur mobile avec indicateur visuel
+   ============================================================= */
+
+/* Wrapper pour gérer le fade */
+.legal-tabs-wrapper {
+  position: relative;
+  background: var(--em-surface-container);
+  border-bottom: 1px solid var(--em-divider);
+}
+
+/* Le dégradé qui indique qu'on peut scroller */
+.legal-tabs-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, transparent, var(--em-surface-container));
+  pointer-events: none; /* Laisse passer les clics */
+
+  /* On le cache sur desktop car tout est visible */
+  @media (min-width: 600px) {
+    display: none;
+  }
 }
 
 .legal-tabs {
   display: flex;
-  border-bottom: 1px solid var(--em-divider);
-  background: var(--em-surface-container);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
 
   button {
-    flex: 1;
-    padding: 1rem;
+    flex-shrink: 0;
+    flex: none;
+
+    padding: 1rem 1.5rem;
     background: transparent;
     border: none;
+    border-bottom: 2px solid transparent;
+
     font-family: var(--em-font-label);
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--em-muted);
+    white-space: nowrap;
+
     cursor: pointer;
     transition: all 0.2s;
 
@@ -63,10 +110,23 @@
     &.active {
       background: var(--em-surface-lowest);
       color: var(--em-primary);
-      border-bottom: 2px solid var(--em-primary);
+      border-bottom-color: var(--em-primary);
+    }
+  }
+
+  /* Sur desktop : répartition égale */
+  @media (min-width: 600px) {
+    overflow-x: visible;
+
+    button {
+      flex: 1;
     }
   }
 }
+
+/* =============================================================
+   CONTENU
+   ============================================================= */
 
 .legal-content {
   padding: 2rem;

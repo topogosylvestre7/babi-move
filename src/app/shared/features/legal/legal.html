@@ -8,22 +8,24 @@
 
   <div class="legal-body">
     <div class="legal-container">
-      <!-- Navigation par onglets -->
-      <nav class="legal-tabs">
-        <button
-          [class.active]="activeTab === 'confidentialite'"
-          (click)="activeTab = 'confidentialite'"
-        >
-          Confidentialité
-        </button>
-        <button [class.active]="activeTab === 'cgu'" (click)="activeTab = 'cgu'">CGU</button>
-        <button [class.active]="activeTab === 'cookies'" (click)="activeTab = 'cookies'">
-          Cookies
-        </button>
-        <button [class.active]="activeTab === 'mentions'" (click)="activeTab = 'mentions'">
-          Mentions légales
-        </button>
-      </nav>
+      <!-- Wrapper pour le fade sur mobile -->
+      <div class="legal-tabs-wrapper">
+        <nav class="legal-tabs">
+          <button
+            [class.active]="activeTab === 'confidentialite'"
+            (click)="activeTab = 'confidentialite'"
+          >
+            Confidentialité
+          </button>
+          <button [class.active]="activeTab === 'cgu'" (click)="activeTab = 'cgu'">CGU</button>
+          <button [class.active]="activeTab === 'cookies'" (click)="activeTab = 'cookies'">
+            Cookies
+          </button>
+          <button [class.active]="activeTab === 'mentions'" (click)="activeTab = 'mentions'">
+            Mentions légales
+          </button>
+        </nav>
+      </div>
 
       <!-- Contenu -->
       <div class="legal-content">
